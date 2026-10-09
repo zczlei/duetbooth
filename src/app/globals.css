@@ -606,3 +606,106 @@ code {
     padding-top: 3rem;
   }
 }
+
+/* Long-form SEO guide (hotel-lobby / 33.md) */
+.effect-guide {
+  display: grid;
+  gap: 0;
+}
+
+.guide-section h3 {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.guide-section p {
+  margin: 0 0 0.85rem;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 68ch;
+}
+
+.guide-section p:last-child {
+  margin-bottom: 0;
+}
+
+.guide-section a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-color: color-mix(in srgb, var(--effect-accent) 55%, transparent);
+}
+
+.guide-section a:hover {
+  color: var(--effect-accent);
+}
+
+.guide-list {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+  max-width: 68ch;
+}
+
+.guide-list li {
+  color: var(--muted);
+  line-height: 1.6;
+  padding-left: 1rem;
+  border-left: 2px solid color-mix(in srgb, var(--effect-accent) 45%, transparent);
+}
+
+.guide-list strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.guide-table-wrap {
+  margin: 0.75rem 0 1rem;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--bg-panel) 80%, transparent);
+}
+
+.guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.guide-table th,
+.guide-table td {
+  padding: 0.7rem 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.guide-table tr:last-child th,
+.guide-table tr:last-child td {
+  border-bottom: none;
+}
+
+.guide-table th {
+  width: 9.5rem;
+  color: var(--ink);
+  font-weight: 650;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.guide-table td {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .guide-table th {
+    width: 7rem;
+    white-space: normal;
+  }
+}

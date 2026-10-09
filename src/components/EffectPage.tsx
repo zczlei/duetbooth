@@ -1,14 +1,21 @@
 import Link from "next/link";
 import type { EffectDefinition } from "@/lib/effects";
 import { EFFECTS } from "@/lib/effects";
+import { EffectJsonLd } from "@/components/EffectJsonLd";
+import {
+  HotelLobbyGuide,
+  HotelLobbyIdeas,
+} from "@/components/effect-guides/HotelLobbyGuide";
 import { PricingSection } from "@/components/PricingSection";
 import { VideoGenerator } from "@/components/VideoGenerator";
 
 export function EffectPage({ effect }: { effect: EffectDefinition }) {
   const others = EFFECTS.filter((e) => e.slug !== effect.slug);
+  const showHotelGuide = effect.slug === "hotel-lobby";
 
   return (
     <main>
+      <EffectJsonLd effect={effect} />
       <section
         className="hero"
         style={{ ["--effect-accent" as string]: effect.accent }}
@@ -43,6 +50,8 @@ export function EffectPage({ effect }: { effect: EffectDefinition }) {
           </div>
         </section>
 
+        {showHotelGuide ? <HotelLobbyGuide /> : null}
+
         <PricingSection effectSlug={effect.slug} />
 
         <section className="section">
@@ -57,6 +66,8 @@ export function EffectPage({ effect }: { effect: EffectDefinition }) {
           </div>
         </section>
 
+        {showHotelGuide ? <HotelLobbyIdeas /> : null}
+
         {others.length ? (
           <section className="section">
             <h2>More styles</h2>
@@ -68,7 +79,7 @@ export function EffectPage({ effect }: { effect: EffectDefinition }) {
                   className="trend-card"
                   style={{ ["--effect-accent" as string]: item.accent }}
                 >
-                  <strong>{item.title}</strong>
+                  <strong>{item.cardTitle || item.title}</strong>
                   <span>{item.headline}</span>
                 </Link>
               ))}

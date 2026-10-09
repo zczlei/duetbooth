@@ -16,10 +16,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const effect = getEffect(slug);
   if (!effect) return {};
 
+  // Title is the topic only — layout template appends "| DuetBooth" once.
   return {
-    title: `${effect.title} | DuetBooth`,
+    title: effect.title,
     description: effect.description,
     keywords: effect.seoKeywords,
+    alternates: { canonical: `/effects/${effect.slug}` },
+    openGraph: {
+      title: effect.title,
+      description: effect.description,
+      url: `/effects/${effect.slug}`,
+    },
   };
 }
 

@@ -18,6 +18,8 @@ export type EffectDefinition = {
   slug: string;
   keyword: string;
   title: string;
+  /** Shorter label for homepage / internal link anchors (optional). */
+  cardTitle?: string;
   headline: string;
   description: string;
   accent: string;
@@ -40,10 +42,11 @@ export const EFFECTS: EffectDefinition[] = [
   {
     slug: "hotel-lobby",
     keyword: "hotel lobby ai",
-    title: "Hotel Lobby AI Video Generator",
+    title: "Hotel Lobby AI Video Generator — Migos Trend from 2 Photos",
+    cardTitle: "Hotel Lobby AI Video Generator",
     headline: "Two photos. One orange booth duet.",
     description:
-      "Upload two clear portraits and turn them into a ready-to-share Hotel Lobby style studio duet. No prompt writing required.",
+      "Hotel lobby AI video generator: turn two photos into the Migos hotel lobby duet in 10 seconds. No prompt writing, pay per clip.",
     accent: "#ff6a2b",
     durationSec: 10,
     aspectRatio: "16:9",
@@ -87,29 +90,49 @@ export const EFFECTS: EffectDefinition[] = [
     howTo: [
       {
         title: "Pick your pair",
-        body: "Choose two people, friends, a couple, or pets. One clear subject per photo works best.",
+        body: "Two subjects only. First upload stays left, second stays right — friends, couples, bandmates, or pets.",
       },
       {
-        title: "Upload clear portraits",
-        body: "Front-facing photos with visible eyes and even light. We keep each reference locked to a side.",
+        title: "Upload two clear portraits",
+        body: "One photo per person, front-facing and evenly lit. JPG, PNG or WebP up to 5MB. Avoid sunglasses and group shots.",
       },
       {
         title: "Generate the duet",
-        body: "Render runs in the background. Download when ready. Failed jobs release reserved credits.",
+        body: "Pick Classic Orange Booth, Friends & Couples, or Rapping Pets. One credit renders a 10-second 16:9 clip.",
       },
     ],
     faq: [
       {
-        q: "How do I stop the two characters from swapping faces?",
-        a: "Upload one subject per photo and keep left/right order consistent. Reference-to-video anchors each identity to a side.",
+        q: "What is the hotel lobby AI trend?",
+        a: "A two-person AI duet recreation of Migos' \"Hotel Lobby\" performance — orange lobby lighting, a hanging microphone, both subjects lip-syncing in a locked medium-wide shot. People post it on TikTok, Reels and Shorts.",
       },
       {
-        q: "How much does one video cost?",
-        a: "Packs start at $4.90 for a single short video. Purchased credits stay on your account until you use them.",
+        q: "How many photos do I need?",
+        a: "Two — one per person. Upload order sets who stands left and who stands right, and that position stays fixed through the clip.",
       },
       {
-        q: "Which model powers this?",
-        a: "We use modern AI video models to animate your photos into a short studio-style clip. Results can vary with photo quality and lighting.",
+        q: "Do I have to write a prompt?",
+        a: "No. The trend's framing, lighting and microphone position are built into the style template, so you only upload photos and press generate.",
+      },
+      {
+        q: "Is there a free hotel lobby AI video generator?",
+        a: "DuetBooth is pay-per-video: $4.90 for one clip, $9.90 for three, $19.90 for ten. Uploading and checking framing is free; one credit renders and downloads the full clip.",
+      },
+      {
+        q: "How long is the video and what ratio?",
+        a: "10 seconds at 16:9, which suits YouTube and landscape feeds. Crop to vertical in your editor if you need a 9:16 frame for TikTok or Reels.",
+      },
+      {
+        q: "Can I use it for couples, friends, or pets?",
+        a: "Yes. Classic Orange Booth is the trend look, Friends & Couples separates two subjects more clearly, and Rapping Pets animates two animals while keeping their fur markings.",
+      },
+      {
+        q: "Do I need an account?",
+        a: "No. You can generate and download as a guest. Sign in with Google if you want your credit balance available on another device.",
+      },
+      {
+        q: "Does the clip include the original song?",
+        a: "No. You add the audio yourself when you post, using the platform's own sound library — which is also the safest way to stay within the platform's licensing.",
       },
     ],
   },
@@ -119,7 +142,7 @@ export const EFFECTS: EffectDefinition[] = [
     title: "Rain Dance AI Video Generator",
     headline: "Put anyone in the rain-dance trend.",
     description:
-      "One clear portrait becomes a cinematic rain-soaked performance clip. Built as a second effect page you can clone for the next trend.",
+      "Rain dance AI video generator: turn one portrait into a cinematic rain-soaked clip — neon night street or soft drizzle. Pay per clip, 8s vertical.",
     accent: "#3ec7ff",
     durationSec: 8,
     aspectRatio: "9:16",
@@ -172,7 +195,7 @@ export const EFFECTS: EffectDefinition[] = [
     title: "AI Zombie Trend Video Generator",
     headline: "Turn a portrait into the zombie trend.",
     description:
-      "A third sample effect page. Duplicate this config when the next viral video keyword appears.",
+      "AI zombie trend video generator: turn one portrait into a short horror-style transformation clip with street color grading. No prompt writing.",
     accent: "#8dff6a",
     durationSec: 8,
     aspectRatio: "9:16",

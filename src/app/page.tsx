@@ -1,7 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PricingSection } from "@/components/PricingSection";
 import { VideoGenerator } from "@/components/VideoGenerator";
 import { EFFECTS, getFeaturedEffect } from "@/lib/effects";
+
+export const metadata: Metadata = {
+  title: "Photo to Video AI Generator — Turn 2 Photos into a Video",
+  description:
+    "Turn two photos into an AI video. Upload portraits, pick a trend style, download a 10-second clip — no prompt writing, pay per video from $4.90.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Photo to Video AI Generator — Turn 2 Photos into a Video",
+    description:
+      "Turn two photos into an AI video. Upload portraits, pick a trend style, download a 10-second clip — no prompt writing, pay per video from $4.90.",
+    url: "/",
+  },
+};
 
 export default function HomePage() {
   const featured = getFeaturedEffect();
@@ -14,11 +28,11 @@ export default function HomePage() {
         style={{ ["--effect-accent" as string]: featured.accent }}
       >
         <div className="shell hero-inner">
-          <p className="brand-mark">AI Video Generator</p>
-          <h1>Turn photos into short videos in minutes.</h1>
+          <p className="brand-mark">2 photos in, 10-second video out</p>
+          <h1>Photo to Video AI Generator</h1>
           <p className="lede">
-            Upload your photos, pick a style, and create a ready-to-share clip.
-            No editing skills needed.
+            Upload two photos, pick a style, and download a ready-to-share AI
+            video in about 10 seconds. No prompt writing needed.
           </p>
           <div className="meta-row">
             <span>Photo to video</span>
@@ -44,7 +58,7 @@ export default function HomePage() {
               style={{ ["--effect-accent" as string]: featured.accent }}
             >
               <em>Popular</em>
-              <strong>{featured.title}</strong>
+              <strong>{featured.cardTitle || featured.title}</strong>
               <span>{featured.description}</span>
             </Link>
             {others.map((effect) => (
@@ -55,7 +69,7 @@ export default function HomePage() {
                 style={{ ["--effect-accent" as string]: effect.accent }}
               >
                 <em>Style</em>
-                <strong>{effect.title}</strong>
+                <strong>{effect.cardTitle || effect.title}</strong>
                 <span>{effect.description}</span>
               </Link>
             ))}

@@ -15,15 +15,22 @@ const sans = Manrope({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://duetbooth.co"),
   title: {
-    default: "DuetBooth — AI Video Generator",
+    default:
+      "Photo to Video AI Generator — Turn 2 Photos into a Video | DuetBooth",
     template: "%s | DuetBooth",
   },
   description:
-    "Turn photos into short AI videos. Upload portraits, pick a style, and download a ready-to-share clip in minutes.",
+    "Turn two photos into an AI video. Upload portraits, pick a trend style, download a 10-second clip — no prompt writing, pay per video from $4.90.",
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     apple: [{ url: "/apple-icon", type: "image/png" }],
+  },
+  openGraph: {
+    type: "website",
+    siteName: "DuetBooth",
+    locale: "en_US",
   },
 };
 
