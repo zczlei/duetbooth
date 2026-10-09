@@ -1,0 +1,57 @@
+---
+description: Cloudflare 上线检查清单 — 部署 DuetBooth / video-effects 时必须对照检查
+alwaysApply: true
+---
+
+# Cloudflare 部署检查清单（DuetBooth）
+
+用户已要求：上线前/部署时主动对照本清单，勿遗漏。
+
+注册：https://dash.cloudflare.com/sign-up → Dashboard  
+资料页：`docs/launch-2026-10-09/index.html`（含截图问答）
+
+## 必须完成
+
+- [x] **Workers**（OpenNext：`@opennextjs/cloudflare`）→ Worker 名 `duetbooth`
+- [x] **KV**：绑定名 `DUETBOOTH_KV`，ID `699306fe965d4c88b74511941bd0c2ff`（`wrangler.jsonc`）
+- [x] **域名 / 自定义域**：`duetbooth.co`（+ www→apex Redirect）
+- [x] **运行时 URL**：`APP_URL` / `AUTH_URL` / `NEXT_PUBLIC_APP_URL` = `https://duetbooth.co`
+- [x] **密钥放 Cloudflare Secrets**（勿 commit `.env*`）；部署用 `pnpm deploy`（`scripts/cf-deploy.sh`，避免烘焙 `.env.local`）
+
+## Secrets（名称核对；勿把明文写进仓库/聊天）
+
+| Secret | 说明 | 状态 |
+|---|---|---|
+| `STRIPE_SECRET_KEY` | 线上 `sk_live_...`；本地 `.env.local` 用 `sk_test_...` | 已配 |
+| `STRIPE_WEBHOOK_SECRET` | Live Webhook → `https://duetbooth.co/api/webhook/stripe` | 已配 |
+| `KIE_API_KEY` | 当前 `VIDEO_PROVIDER=kie` | 已配 |
+| `KIE_API_BASE` | 默认 `https://api.kie.ai` | 已配 |
+| `KIE_VIDEO_MODEL` | `bytedance/seedance-2-mini` | 已配 |
+| `KIE_RESOLUTION` | 如 `480p` | 已配 |
+| `FAL_KEY` / `FAL_VIDEO_MODEL` / `FAL_RESOLUTION` | 备用 provider | 已配 |
+| `VIDEO_PROVIDER` | `kie` 或 `fal` | 已配 |
+| `AUTH_SECRET` | Auth.js | 已配 |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google OAuth | 已配 |
+| `APP_URL` / `AUTH_URL` / `NEXT_PUBLIC_APP_URL` | `https://duetbooth.co` | 已配 |
+
+### Google OAuth 回调（Console 里配置，不是 CF Secret）
+
+- 本地：`http://localhost:3005/api/auth/callback/google`
+- 线上：`https://duetbooth.co/api/auth/callback/google`
+
+### 写入 / 核对命令
+
+```bash
+cd video-effects
+npx wrangler secret list --name duetbooth
+# 单项更新示例：
+# printf '%s' 'value' | npx wrangler secret put NAME --name duetbooth
+curl -s https://duetbooth.co/api/wallet
+# 期望：store=kv, stripeReady=true, googleReady=true
+```
+
+## 其它
+
+- 生成走异步 jobs（提交 + 轮询），避免 Workers 长请求超时
+- KIE：大图先 `file-base64-upload`，再 `createTask`（勿直接塞 data URL）
+- 本地未绑 KV 时回退 `data/kv` 文件存储

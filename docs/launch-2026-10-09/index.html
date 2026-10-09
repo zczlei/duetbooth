@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DuetBooth 上线手记 · 2026-10-09</title>
+<style>
+:root {
+  --bg:#14110f; --panel:#1d1815; --ink:#f6efe6; --muted:#b7a999;
+  --accent:#ff6a2b; --line:rgba(246,239,230,.12); --ok:#8dff6a; --ans:#c8e6c0;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; color:var(--ink);
+  font:16px/1.55 "Manrope","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:
+    radial-gradient(900px 420px at 8% -5%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 55%),
+    linear-gradient(180deg,#1a1512 0%, var(--bg) 40%, #100e0c 100%);
+}
+a { color:var(--accent); }
+.wrap { width:min(1120px, calc(100% - 2rem)); margin:0 auto; padding:2rem 0 4rem; }
+.brand { font-family:Georgia,serif; font-size:1.35rem; }
+h1 { font-family:Georgia,serif; font-size:clamp(1.7rem,4vw,2.5rem); margin:.35rem 0; letter-spacing:-.03em; }
+h2 { font-family:Georgia,serif; font-size:1.4rem; margin:2.2rem 0 .8rem; padding-top:1rem; border-top:1px solid var(--line); }
+h3 { font-size:1.05rem; margin:1.2rem 0 .7rem; }
+.lede,.note { color:var(--muted); }
+.nav-sticky {
+  position:sticky; top:0; z-index:5; backdrop-filter:blur(12px);
+  background:rgba(20,17,15,.88); border-bottom:1px solid var(--line); padding:.55rem 0;
+}
+.nav-sticky .wrap { display:flex; flex-wrap:wrap; gap:.55rem 1rem; padding:.15rem 0; }
+.nav-sticky a { color:var(--muted); text-decoration:none; font-size:.85rem; }
+.nav-sticky a:hover { color:var(--ink); }
+.toc { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:.55rem; margin:1.2rem 0 1.6rem; }
+.toc a {
+  display:block; padding:.65rem .8rem; border:1px solid var(--line); border-radius:12px;
+  background:color-mix(in srgb, var(--panel) 80%, transparent); color:var(--ink); text-decoration:none; font-size:.9rem;
+}
+.card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:1rem 1.15rem; margin:1rem 0; }
+ul.checklist { padding-left:1.15rem; }
+.tag {
+  display:inline-block; padding:.12rem .45rem; border-radius:999px; font-size:.72rem;
+  border:1px solid color-mix(in srgb, var(--ok) 45%, var(--line)); color:var(--ok); margin-right:.25rem;
+}
+code, pre { font-family:ui-monospace,Menlo,monospace; font-size:.84rem; }
+code { background:rgba(255,255,255,.06); padding:.08em .32em; border-radius:.35em; }
+pre { background:#0e0c0b; border:1px solid var(--line); border-radius:12px; padding:1rem; overflow:auto; white-space:pre-wrap; }
+table { width:100%; border-collapse:collapse; font-size:.88rem; margin:1rem 0; }
+th, td { border:1px solid var(--line); padding:.5rem .6rem; text-align:left; vertical-align:top; }
+th { background:rgba(255,106,43,.12); }
+.qi { margin-bottom:.35rem; }
+.ai { color:var(--muted); font-size:.86rem; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:1.1rem; }
+.shot {
+  margin:0; background:#0e0c0b; border:1px solid var(--line); border-radius:14px; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.shot .q {
+  margin:0; padding:.7rem .85rem; font-size:.92rem; font-weight:600; color:var(--ink); line-height:1.4;
+  border-left:3px solid var(--accent); background:rgba(255,106,43,.1);
+}
+.shot .q .label {
+  display:inline-block; margin-right:.4rem; padding:.05rem .4rem; border-radius:6px;
+  background:var(--accent); color:#1a1008; font-size:.72rem; font-weight:700; vertical-align:middle;
+}
+.shot .ans {
+  padding:.65rem .85rem .75rem; font-size:.84rem; color:#d8cfc3; line-height:1.5;
+  border-bottom:1px solid var(--line); background:rgba(141,255,106,.04);
+}
+.shot .ans::before {
+  content:"答"; display:inline-block; margin:0 .4rem .35rem 0; padding:.05rem .4rem; border-radius:6px;
+  background:color-mix(in srgb, var(--ok) 70%, #222); color:#102008; font-size:.72rem; font-weight:700;
+}
+.shot .ans p { margin:.35rem 0; }
+.shot .ans ul { margin:.35rem 0; padding-left:1.15rem; }
+.shot .ans li { margin:.2rem 0; }
+.shot .ans.empty { color:var(--muted); }
+.shot .imgwrap { display:block; border-top:0; }
+.shot img {
+  display:block; width:100%; height:210px; object-fit:cover; object-position:top; background:#000;
+}
+.shot figcaption { padding:.55rem .75rem .7rem; font-size:.78rem; color:var(--muted); }
+.shot .t { color:var(--accent); }
+.block { margin:1.4rem 0 2rem; }
+footer.site { margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.86rem; }
+</style>
+</head>
+<body>
+<div class="nav-sticky"><div class="wrap">
+  <span class="brand">DuetBooth</span>
+  <a href="#overview">总览</a>
+  <a href="#cf-checklist">密钥检查表</a>
+  <a href="#qa-index">问答索引</a>
+  <a href="#shots">截图问答</a>
+  <a href="#pitfalls">踩坑</a>
+  <a href="#ops">命令</a>
+</div></div>
+
+<div class="wrap">
+<header id="overview" style="padding:1.5rem 0 1rem;border-bottom:1px solid var(--line);margin-bottom:1.5rem;">
+  <div class="brand">DuetBooth</div>
+  <h1>上线手记 · 2026-10-09</h1>
+  <p class="lede">当天域名 / Cloudflare / Stripe / Google / KIE 操作资料。
+  每张截图都带了<strong>你的问题</strong>和<strong>当时的回答</strong>。</p>
+  <p class="note">共 54 组问答截图 · <a href="https://duetbooth.co" target="_blank" rel="noopener">duetbooth.co</a></p>
+</header>
+
+<nav class="toc">
+  <a href="#checklist">完成清单</a>
+  <a href="#cf-checklist">CF/密钥检查表</a>
+  <a href="#qa-index">问答索引表</a>
+  <a href="#shots">分类截图问答</a>
+  <a href="#pitfalls">踩坑摘要</a>
+  <a href="#ops">运维命令</a>
+</nav>
+
+<section id="checklist">
+  <h2>今日完成清单</h2>
+  <div class="card"><ul class="checklist">
+    <li><span class="tag">完成</span> 域名 <code>duetbooth.co</code> + Cloudflare NS / 自定义域 / www→apex</li>
+    <li><span class="tag">完成</span> Worker <code>duetbooth</code> + KV <code>DUETBOOTH_KV</code></li>
+    <li><span class="tag">完成</span> Stripe live + Webhook；Google OAuth 生产回调</li>
+    <li><span class="tag">完成</span> 修 localhost 回调、KV、KIE data URL；Favicon</li>
+  </ul></div>
+</section>
+
+
+<section id="cf-checklist">
+  <h2>Cloudflare 上线 / 密钥检查表</h2>
+  <p class="note">源文件：<code>.cursor/rules/cloudflare-deploy-checklist.mdc</code>（Cursor 规则，部署时也会对照）。README 里也有同名清单。</p>
+  <div class="card">
+    <h3>基础设施</h3>
+    <ul class="checklist">
+      <li><span class="tag">完成</span> Workers（OpenNext）→ <code>duetbooth</code> · <code>https://duetbooth.zczlei.workers.dev</code></li>
+      <li><span class="tag">完成</span> KV <code>DUETBOOTH_KV</code> · ID <code>699306fe965d4c88b74511941bd0c2ff</code></li>
+      <li><span class="tag">完成</span> 域名 <code>duetbooth.co</code> + www→apex Redirect</li>
+      <li><span class="tag">完成</span> 运行时 URL：<code>APP_URL</code> / <code>AUTH_URL</code> / <code>NEXT_PUBLIC_APP_URL</code> = <code>https://duetbooth.co</code></li>
+      <li><span class="tag">完成</span> 密钥只放 Cloudflare Secrets；部署用 <code>pnpm deploy</code>（勿把 <code>.env.local</code> 打进产物）</li>
+    </ul>
+  </div>
+  <table>
+    <thead><tr><th>Secret 名</th><th>用途</th><th>线上状态</th></tr></thead>
+    <tbody>
+      <tr><td><code>STRIPE_SECRET_KEY</code></td><td>正式收款 <code>sk_live_...</code>（本地用 test）</td><td><span class="tag">已配</span></td></tr>
+      <tr><td><code>STRIPE_WEBHOOK_SECRET</code></td><td>Live Webhook → <code>/api/webhook/stripe</code></td><td><span class="tag">已配</span></td></tr>
+      <tr><td><code>KIE_API_KEY</code> / <code>KIE_API_BASE</code> / <code>KIE_VIDEO_MODEL</code> / <code>KIE_RESOLUTION</code></td><td>当前视频 provider</td><td><span class="tag">已配</span></td></tr>
+      <tr><td><code>FAL_KEY</code> / <code>FAL_VIDEO_MODEL</code> / <code>FAL_RESOLUTION</code></td><td>备用 FAL</td><td><span class="tag">已配</span></td></tr>
+      <tr><td><code>VIDEO_PROVIDER</code></td><td><code>kie</code> 或 <code>fal</code></td><td><span class="tag">已配</span></td></tr>
+      <tr><td><code>AUTH_SECRET</code></td><td>Auth.js</td><td><span class="tag">已配</span></td></tr>
+      <tr><td><code>AUTH_GOOGLE_ID</code> / <code>AUTH_GOOGLE_SECRET</code></td><td>Google 登录</td><td><span class="tag">已配</span></td></tr>
+      <tr><td><code>APP_URL</code> / <code>AUTH_URL</code> / <code>NEXT_PUBLIC_APP_URL</code></td><td><code>https://duetbooth.co</code></td><td><span class="tag">已配</span></td></tr>
+    </tbody>
+  </table>
+  <div class="card">
+    <h3>Google OAuth（在 Google Cloud Console，不是 CF Secret）</h3>
+    <ul>
+      <li>本地：<code>http://localhost:3005/api/auth/callback/google</code></li>
+      <li>线上：<code>https://duetbooth.co/api/auth/callback/google</code></li>
+    </ul>
+    <h3>核对命令</h3>
+    <pre>cd video-effects
+npx wrangler secret list --name duetbooth
+curl -s https://duetbooth.co/api/wallet
+# 期望：store=kv，stripeReady=true，googleReady=true</pre>
+    <p class="note">2026-10-09 实测：<code>store:kv</code> · <code>stripeReady:true</code> · <code>googleReady:true</code> · 已列出 16 个 Secret 名。</p>
+  </div>
+</section>
+
+<section id="qa-index">
+  <h2>问答索引</h2>
+  <p class="note">点击编号跳到完整问答 + 截图。</p>
+  <table>
+    <thead><tr><th>时间</th><th>#</th><th>主题</th><th>问 / 答摘要</th></tr></thead>
+    <tbody><tr><td>11:02</td><td><a href="#shot-01">#01</a></td><td>Google OAuth</td><td><div class="qi"><strong>问：</strong>如截图所示，这样对吗</div><div class="ai"><strong>答：</strong>对，本地开发这样配就行。 - 名称：`DuetBooth Web` - 来源：`http://localhost:3005` - 重定向：`http://localhost:3005/api/auth/callback/google` - …</div></td></tr><tr><td>11:11</td><td><a href="#shot-02">#02</a></td><td>Google OAuth</td><td><div class="qi"><strong>问：</strong>有个报错，如截图所示：</div><div class="ai"><strong>答：</strong>已修好。 原因是开启了 `cacheComponents` 后，Header 里 `await auth()` 会挡住预渲染。登录状态已改到客户端用 `useSession()` 读取。 刷新 http://localhost:3005，左…</div></td></tr><tr><td>11:11</td><td><a href="#shot-03">#03</a></td><td>Google OAuth</td><td><div class="qi"><strong>问：</strong>有个报错，如截图所示：</div><div class="ai"><strong>答：</strong>已修好。 原因是开启了 `cacheComponents` 后，Header 里 `await auth()` 会挡住预渲染。登录状态已改到客户端用 `useSession()` 读取。 刷新 http://localhost:3005，左…</div></td></tr><tr><td>14:52</td><td><a href="#shot-04">#04</a></td><td>Stripe 密钥</td><td><div class="qi"><strong>问：</strong>如截图所示，我再创建后，之前的会被覆盖吗，还是会增加一给key</div><div class="ai"><strong>答：</strong>截图里这是 **Standard keys（标准密钥）**，不是 Restricted。 **不会「再多出一个」Secret key。** 正式环境通常就这一对： - `pk_live_...` Publishable key - `sk_…</div></td></tr><tr><td>14:55</td><td><a href="#shot-05">#05</a></td><td>Stripe 密钥</td><td><div class="qi"><strong>问：</strong>如截图所示 ，我要选择create secret key吗，因为之前key显示不全啊</div><div class="ai"><strong>答：</strong>**不用点 Create secret key。** `sk_live_...Swgm` 是故意遮住的，不是坏了。点现有那一行 Secret key 的 token（或右侧 `...`），选 **Reveal / 显示密钥**，会弹出完整 …</div></td></tr><tr><td>14:56</td><td><a href="#shot-06">#06</a></td><td>Stripe 密钥</td><td><div class="qi"><strong>问：</strong>只有这些菜单</div><div class="ai"><strong>答：</strong>那就对上了：现在这把 **Secret key 创建后只显示一次**，之后菜单里**没有 Reveal**，只能看到 `sk_live_...Swgm` 这种遮罩。 你有两条路： 1. **Create secret key**（推荐你现在…</div></td></tr><tr><td>14:57</td><td><a href="#shot-07">#07</a></td><td>Stripe 密钥</td><td><div class="qi"><strong>问：</strong>选择哪个</div><div class="ai"><strong>答：</strong>选第一个：**Powering an integration you built**。 这是你自己网站/后端（Next.js）调 Stripe API 用的。 后面两个别选： - 第三方应用/插件 - 授权 AI agent（Cursor …</div></td></tr><tr><td>15:10</td><td><a href="#shot-08">#08</a></td><td>Cloudflare 注册</td><td><div class="qi"><strong>问：</strong>进来后是这个 ，如截图所示</div><div class="ai"><strong>答：</strong>对，这就是 Cloudflare Dashboard 首页，注册成功了。 接下来按清单点左侧这几块即可（现在不用全做完）： | 要做的事 | 点哪里 | |---|---| | Workers | 左侧 **Build → Compute*…</div></td></tr><tr><td>15:23</td><td><a href="#shot-09">#09</a></td><td>Cloudflare KV</td><td><div class="qi"><strong>问：</strong>选哪个</div><div class="ai"><strong>答：</strong>选 **Standard**，然后点 **Create**。 Jurisdiction 是数据必须留在某国/地区才用；一般站点不需要。 名字用 `DUETBOOTH_KV` 也可以。创建后把页面上的 **Namespace ID** 复制留…</div></td></tr><tr><td>15:25</td><td><a href="#shot-10">#10</a></td><td>Cloudflare KV</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>对，**KV 建好了**。空的、没有 entries 是正常的——积分和任务会由程序自动写入，不用点 **Add entry**。 下一步：点顶部的 **Settings**，把 **Namespace ID** 复制发给我（一串类似 `x…</div></td></tr><tr><td>15:28</td><td><a href="#shot-11">#11</a></td><td>Cloudflare KV</td><td><div class="qi"><strong>问：</strong>699306fe965d4c88b74511941bd0c2ff，如截图所示</div><div class="ai"><strong>答：</strong>**Namespace ID 已写入** `wrangler.jsonc`：`699306fe965d4c88b74511941bd0c2ff`，绑定名 `DUETBOOTH_KV`。 同时已接好 OpenNext 脚手架： - `wran…</div></td></tr><tr><td>15:33</td><td><a href="#shot-12">#12</a></td><td>Cloudflare Worker</td><td><div class="qi"><strong>问：</strong>如截图所示，</div><div class="ai"><strong>答：</strong>登录没问题。代码也已经 **build 成功**，但部署停在这一步： **账号还没注册 `workers.dev` 子域**（第一次用 Workers 必做）。 请你本机浏览器打开： https://dash.cloudflare.com/…</div></td></tr><tr><td>15:36</td><td><a href="#shot-13">#13</a></td><td>Cloudflare Worker</td><td><div class="qi"><strong>问：</strong>如截图所示 ，打开 dash.cloudflare.com/a37ddcd55479d60107a25…514/workers/onboarding  404</div><div class="ai"><strong>答：</strong>那个 onboarding 链接已经失效（404）。我改用 API 注册了子域 **`zczlei`**，并完成部署。 **线上地址：** https://duetbooth.zczlei.workers.dev KV `DUETBOOTH…</div></td></tr><tr><td>15:39</td><td><a href="#shot-14">#14</a></td><td>线上验证</td><td><div class="qi"><strong>问：</strong>现在打开页面，见截图</div><div class="ai"><strong>答：</strong>原因是 Next.js 16.4 的 `preview-props.json` 未被 OpenNext 内联。正在打补丁并重新部署。</div></td></tr><tr><td>16:30</td><td><a href="#shot-15">#15</a></td><td>域名接入</td><td><div class="qi"><strong>问：</strong>选哪个</div><div class="ai"><strong>答：</strong>选第一个：**Connect a domain**。 域名还在 GoDaddy，只是把 DNS/加速交给 Cloudflare，方便绑 Worker。不用 Transfer（搬家注册商），也不用 Buy。</div></td></tr><tr><td>16:32</td><td><a href="#shot-16">#16</a></td><td>域名接入</td><td><div class="qi"><strong>问：</strong>如截图所示，填哪些</div><div class="ai"><strong>答：</strong>这样填即可： 1. **Domain name**：填 `duetbooth.co`（不要加 `https://` 或 `www`） 2. **I monetize pages that serve ads**：不勾（你们是卖积分，不是广告…</div></td></tr><tr><td>16:35</td><td><a href="#shot-17">#17</a></td><td>域名 DNS</td><td><div class="qi"><strong>问：</strong>这个如何操作</div><div class="ai"><strong>答：</strong>这页是在确认 DNS 记录。GoDaddy 自动导入的那些 A 记录（`15.197…` / `3.33…`）是**停车页**，不是你的 Worker，先不用管它们。 ## 现在怎么做 1. **直接点底部的「Continue to act…</div></td></tr><tr><td>16:36</td><td><a href="#shot-18">#18</a></td><td>Nameserver</td><td><div class="qi"><strong>问：</strong>如截图所示，</div><div class="ai"><strong>答：</strong>对，就是这一步。去 **GoDaddy** 把 Nameserver 换成 Cloudflare 这两个： ``` daniella.ns.cloudflare.com rene.ns.cloudflare.com ``` ## GoDad…</div></td></tr><tr><td>16:40</td><td><a href="#shot-19">#19</a></td><td>Nameserver</td><td><div class="qi"><strong>问：</strong>如截图所示：</div><div class="ai"><strong>答：</strong>GoDaddy 这边已经改对了：两个 NS 都是 Cloudflare 的，不用再点 Change Nameservers。 ## 下一步 1. 回到 **Cloudflare** 里 `duetbooth.co` 的页面 2. 看状态是否…</div></td></tr><tr><td>16:41</td><td><a href="#shot-20">#20</a></td><td>Nameserver</td><td><div class="qi"><strong>问：</strong>上次停留的界面，如截图所示</div><div class="ai"><strong>答：</strong>GoDaddy 已经改过 NS 了，这页不用再填东西。 直接点蓝色按钮：**I updated my nameservers**。 Cloudflare 会去检测。若还显示 Pending，等几分钟再点一次检查即可。 下面 Recommen…</div></td></tr><tr><td>16:43</td><td><a href="#shot-21">#21</a></td><td>域名激活</td><td><div class="qi"><strong>问：</strong>变成这个页面</div><div class="ai"><strong>答：</strong>公共 DNS 已经指向 Cloudflare 了（生效很快）。 现在你可以： 1. 点 **Check nameservers now** 2. 若还 Pending，过几分钟再点一次，直到变成 **Active** Active 之后右侧…</div></td></tr><tr><td>16:45</td><td><a href="#shot-22">#22</a></td><td>域名 / Worker</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>这页就是在**等 Cloudflare 自己确认**，正常。NS 其实已经生效了（公网已指向 Cloudflare）。 - 站点：`duetbooth.zczlei.workers.dev` 仍可用（200） - `duetbooth.co…</div></td></tr><tr><td>16:46</td><td><a href="#shot-23">#23</a></td><td>域名 / Worker</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>域名已经 **Active** 了。下一步把站绑上去： 右侧 **Workers** → 点 **Connect Worker**（不要点 Create Worker）→ 选已有的 **`duetbooth`** → 主机名填 **`due…</div></td></tr><tr><td>16:47</td><td><a href="#shot-24">#24</a></td><td>域名 / Worker</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>你进的是 **Workers Routes**（域名下的路由页），可以在这里绑。 ## 在这页操作 1. 点蓝色 **Add route** 2. 填写： - **Route**：`duetbooth.co/*` - **Worker**：…</div></td></tr><tr><td>16:51</td><td><a href="#shot-25">#25</a></td><td>自定义域</td><td><div class="qi"><strong>问：</strong>我走的这个：也可以换入口（效果一样或更好）：
+左侧回到账号级 Compute / Workers → 点开 Worker duetbooth → Domains → Add duetbooth.co，如截图所示</div><div class="ai"><strong>答：</strong>对，就是这个入口。接着点： 1. 顶部菜单点 **Domains**（Overview 右边那个） 2. 在 **Custom domains** 里点 **Add** / **Set up a domain** 3. 填 **`duetb…</div></td></tr><tr><td>16:52</td><td><a href="#shot-26">#26</a></td><td>自定义域</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>对，就是这页。 点蓝色 **+ Add Domain** → 填入 **`duetbooth.co`** → 确认添加。 成功后再点一次，加 **`www.duetbooth.co`**（可选）。 出现冲突就先去域名 DNS 删掉那两条停车…</div></td></tr><tr><td>16:53</td><td><a href="#shot-27">#27</a></td><td>自定义域</td><td><div class="qi"><strong>问：</strong>如截图所示，不用填写吧</div><div class="ai"><strong>答：</strong>对，**Subdomain 留空**（就是根域 `duetbooth.co`）。 **Enable for** 保持 **Production**，然后点 **Add domain**。</div></td></tr><tr><td>16:53</td><td><a href="#shot-28">#28</a></td><td>自定义域</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>报错是因为根域上还有旧 DNS 记录（GoDaddy 停车页那两条 A）。先删掉再加。 ## 操作 1. 点 **Cancel** 关掉这个弹窗 2. 打开域名管理：Dashboard → 选中 **`duetbooth.co`** → *…</div></td></tr><tr><td>16:56</td><td><a href="#shot-29">#29</a></td><td>DNS 清理</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>对，就是 Cloudflare 这个页面。 **删除这两条 A 记录**（根域停车页）： 1. `duetbooth.co` → `15.197.148.33` 2. `duetbooth.co` → `3.33.130.190` 每行右侧…</div></td></tr><tr><td>16:58</td><td><a href="#shot-30">#30</a></td><td>DNS 清理</td><td><div class="qi"><strong>问：</strong>已经删除了</div><div class="ai"><strong>答：</strong>很好，DNS 清干净了。 现在回去： **Compute → Workers → `duetbooth` → Domains → + Add Domain** Subdomain **留空** → Enable for **Producti…</div></td></tr><tr><td>16:59</td><td><a href="#shot-31">#31</a></td><td>域名绑定</td><td><div class="qi"><strong>问：</strong>如截图所示：</div><div class="ai"><strong>答：</strong>根域 **`duetbooth.co` 已经加上了**（背景列表里有）。报错只是加 **www** 时和现有 `www` CNAME 冲突。 ## 二选一 **A（推荐先这样）：** 点 **Cancel**，先只用 `https://du…</div></td></tr><tr><td>17:02</td><td><a href="#shot-32">#32</a></td><td>配置确认</td><td><div class="qi"><strong>问：</strong>如截图所示，现在改成什么</div><div class="ai"><strong>答：</strong>**不用删掉 localhost**，在原有基础上 **再加** 线上这两项： ## 已获授权的 JavaScript 来源 保留： - `http://localhost:3005` 再加： - `https://duetbooth.co…</div></td></tr><tr><td>17:12</td><td><a href="#shot-33">#33</a></td><td>Stripe Webhook</td><td><div class="qi"><strong>问：</strong>如何进入 webhook页面</div><div class="ai"><strong>答：</strong>从你截图的侧边栏进： 1. 点最下面的 **开发人员（Developers）** 2. 再点 **Webhooks** 3. 确认右上角 **Test mode 已关闭**（正式模式） 4. 点 **添加端点 / Add endpoint*…</div></td></tr><tr><td>17:15</td><td><a href="#shot-34">#34</a></td><td>Stripe Webhook</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>对，就是这页。 点右上角紫色 **+ Add destination**，然后： 1. 类型选 **Webhook endpoint**（网页钩子） 2. **Endpoint URL** 填：`https://duetbooth.co/a…</div></td></tr><tr><td>17:18</td><td><a href="#shot-35">#35</a></td><td>Stripe Webhook</td><td><div class="qi"><strong>问：</strong>见截图</div><div class="ai"><strong>答：</strong>勾选这一条即可： **`checkout.session.completed`** 其它（async_payment_failed / expired 等）可以不勾，代码目前只处理 completed。 勾完点 **Continue →**…</div></td></tr><tr><td>17:21</td><td><a href="#shot-36">#36</a></td><td>Stripe Webhook</td><td><div class="qi"><strong>问：</strong>我勾选了4条，应该没影响吧</div><div class="ai"><strong>答：</strong>没影响。多勾的那几条 Stripe 会推过来，代码里只会处理 `checkout.session.completed`，其它会忽略，不会出错。 继续点 **Continue →** 填 URL：`https://duetbooth.co/a…</div></td></tr><tr><td>17:21</td><td><a href="#shot-37">#37</a></td><td>Stripe Webhook</td><td><div class="qi"><strong>问：</strong>这个选哪个</div><div class="ai"><strong>答：</strong>选第一个：**Webhook endpoint**，然后点 **Continue →**。</div></td></tr><tr><td>17:23</td><td><a href="#shot-38">#38</a></td><td>Stripe Webhook</td><td><div class="qi"><strong>问：</strong>如截图所示 ，如何填写</div><div class="ai"><strong>答：</strong>这样填： | 字段 | 填什么 | |---|---| | **Destination name** | `duetbooth`（随便起，好认就行） | | **Endpoint URL** | `https://duetbooth.co/…</div></td></tr><tr><td>17:36</td><td><a href="#shot-39">#39</a></td><td>www 跳转</td><td><div class="qi"><strong>问：</strong>如截图</div><div class="ai"><strong>答：</strong>点卡片 **Redirect from WWW to root** 上的 **Create from template**。 这就是 www → 主域（`duetbooth.co`），正是你要的。 下一页一般直接 **Deploy** / …</div></td></tr><tr><td>17:37</td><td><a href="#shot-40">#40</a></td><td>www 跳转</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>这页可以基本不动，按模板来。 1. **Rule name**：保持 `Redirect from WWW to root [Template]` 即可 2. **Request URL**：保持 `https://www.*` 即可（在你…</div></td></tr><tr><td>17:37</td><td><a href="#shot-41">#41</a></td><td>www 跳转</td><td><div class="qi"><strong>问：</strong>如截图</div><div class="ai"><strong>答：</strong>这页整体对，再确认两点后点 **Deploy**： 1. **Request URL** 必须是 `https://www.*`（`www.` 和 `*` 之间**不要空格**） 2. **Preserve query string**：建…</div></td></tr><tr><td>17:40</td><td><a href="#shot-42">#42</a></td><td>www 跳转</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>选第二个：**Create a new proxied DNS record**，再点 **Deploy rule**。 原因：跳转规则只对「走 Cloudflare 代理（橙云）」的流量生效；选这个会给 `www` 建一条代理记录，规则才…</div></td></tr><tr><td>17:43</td><td><a href="#shot-43">#43</a></td><td>www 跳转</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>IPv4 填：**`192.0.2.1`**（Cloudflare 提示的占位地址，只为让 www 走橙云，真正访问会被 301 转到主域）。 然后点 **Create record &amp; deploy rule**。 Type 保持 **A…</div></td></tr><tr><td>17:44</td><td><a href="#shot-44">#44</a></td><td>www 跳转</td><td><div class="qi"><strong>问：</strong>有冲突。</div><div class="ai"><strong>答：</strong>有冲突是正常的：`www` 已经作为 Worker 自定义域存在，不能再新建一条 A 记录。 改选第一个：**Ignore and deploy rule anyway** → 再点 **Deploy rule**（或 Create… 旁变…</div></td></tr><tr><td>17:45</td><td><a href="#shot-45">#45</a></td><td>正式收款</td><td><div class="qi"><strong>问：</strong>如截图所示</div><div class="ai"><strong>答：</strong>规则已经生效，配置正确。 已验证：`https://www.duetbooth.co` → **301** → `https://duetbooth.co/`（200）。 可以正常用了。</div></td></tr><tr><td>17:49</td><td><a href="#shot-46">#46</a></td><td>正式收款烟测</td><td><div class="qi"><strong>问：</strong>因为我要测试下正式的收费，所以，能否把如截图所示，4.9美金改成0.9美金，让我先测试下充值，积分就按4.9美金的给我</div><div class="ai"><strong>答：</strong>已改好并部署到线上。 - **Single Video**：现收 **$0.90**（真扣款） - **积分**：仍是 **1 credit**（和原来 $4.90 一样） - Three / Creator 套餐未改 在 https://…</div></td></tr><tr><td>17:55</td><td><a href="#shot-47">#47</a></td><td>支付踩坑</td><td><div class="qi"><strong>问：</strong>为啥付费后跳转到如截图所示，本地的</div><div class="ai"><strong>答：</strong>原因已经定位，并修好了。 **原因：** 创建 Stripe Checkout 时，`success_url` 来自 `getAppUrl()`。构建时读了 `.env.local` 里的 `NEXT_PUBLIC_APP_URL=http…</div></td></tr><tr><td>17:58</td><td><a href="#shot-48">#48</a></td><td>支付踩坑</td><td><div class="qi"><strong>问：</strong>现在还没看到积分，显示的还是0，如截图所示 ，是要刷新吗</div><div class="ai"><strong>答：</strong>Worker secrets 本应优先于打包进产物的 `.env.local`；线上仍查不到 `cs_live_`，说明 Cloudflare 上的 `STRIPE_SECRET_KEY` 很可能还是 test。正在找回 live key …</div></td></tr><tr><td>18:13</td><td><a href="#shot-49">#49</a></td><td>产品确认</td><td><div class="qi"><strong>问：</strong>这个是单个照片生成视频吗</div><div class="ai"><strong>答：</strong>对。**Street Zombie**（`zombie-trend`）是 **1 张人像照片 → 一段 8 秒 9:16 视频**，消耗 **1 credit**。 和 Hotel Lobby 不同：Hotel Lobby 要 **两张**…</div></td></tr><tr><td>18:19</td><td><a href="#shot-50">#50</a></td><td>生成踩坑</td><td><div class="qi"><strong>问：</strong>报错，见截图</div><div class="ai"><strong>答：</strong>原因已经对上，并已上线修复。 **原因：** 页面把照片以 `data:` base64 直接塞给 KIE。小图偶尔能过，真人像会触发对方 `500 Server exception`。积分已按提示退回。 **修复：** 生成前先把图片上传…</div></td></tr><tr><td>18:23</td><td><a href="#shot-51">#51</a></td><td>生成踩坑</td><td><div class="qi"><strong>问：</strong>这个是啥问题？</div><div class="ai"><strong>答：</strong>这不是我们站点的 bug，是 **KIE / Seedance 内容审核**拦了这张图。 报错大意是：输入图可能涉及**版权/受限素材**（常见于明星照、官方宣传图、可识别公众人物等），任务被拒；积分已退回。 上传链路这次已经通了（不再是之…</div></td></tr><tr><td>18:28</td><td><a href="#shot-52">#52</a></td><td>生成排队</td><td><div class="qi"><strong>问：</strong>如截图所示，现在在排队吗，</div><div class="ai"><strong>答：</strong>对，截图里就是在排队： - 按钮显示 **Queued...** - 下面有 **Waiting in queue...** - 右侧预览也是 **Queued...**，页面在隔几秒轮询任务状态 积分已扣 1（余额 1），等 KIE 开始…</div></td></tr><tr><td>18:35</td><td><a href="#shot-53">#53</a></td><td>Favicon</td><td><div class="qi"><strong>问：</strong>如截图所示，这个图片是什么图标，是给网站设计的吗，还是用的缺省的</div><div class="ai"><strong>答：</strong>红圈里那个**不是网站图标**，是浏览器**扩展栏**里的扩展：白底黑 **N**，一般是 **Next.js DevTools**（开发者装的），和 DuetBooth 页面设计无关。 DuetBooth 自己目前也**没有单独设计 fa…</div></td></tr><tr><td>18:36</td><td><a href="#shot-54">#54</a></td><td>Favicon</td><td><div class="qi"><strong>问：</strong>DuetBooth 自己目前也没有单独设计 favicon……设计一个吧</div><div class="ai"><strong>答：</strong>已设计并上线：暖色暗底 + 橙色照相亭边框 + 两个米色人像剪影（呼应 Duet/Booth）。提供 /favicon.svg、/icon、/apple-icon；硬刷新标签页可见。</div></td></tr></tbody>
+  </table>
+</section>
+
+<section id="shots">
+  <h2>分类截图问答</h2>
+  <section class="block"><h3>Google OAuth</h3><div class="grid"><figure class="shot" id="shot-01">
+  <blockquote class="q"><span class="label">问</span>如截图所示，这样对吗</blockquote>
+  <div class="ans"><p>对，本地开发这样配就行。</p><ul><li>名称：<code>DuetBooth Web</code></li><li>来源：<code>http://localhost:3005</code></li><li>重定向：<code>http://localhost:3005/api/auth/callback/google</code></li><li>下面那个「AI-powered agent」不用勾</li></ul><p>点 <strong>Create</strong>，把 Client ID / Secret 填进 <code>.env.local</code> 的 <code>AUTH_GOOGLE_ID</code>、<code>AUTH_GOOGLE_SECRET</code>，重启 <code>pnpm dev</code> 即可。上线后再各加正式域名那两行。</p></div>
+  <a class="imgwrap" href="screenshots/01_7d9a8349-35ca-4cf4-adec-20d320389f73-cec15746-fea1-48fd-8778-eb26d7524f10.png" target="_blank" rel="noopener">
+    <img src="screenshots/01_7d9a8349-35ca-4cf4-adec-20d320389f73-cec15746-fea1-48fd-8778-eb26d7524f10.png" alt="如截图所示，这样对吗" loading="lazy" />
+  </a>
+  <figcaption><span class="t">11:02</span> · #01 · Google OAuth</figcaption>
+</figure><figure class="shot" id="shot-02">
+  <blockquote class="q"><span class="label">问</span>有个报错，如截图所示：</blockquote>
+  <div class="ans"><p>已修好。</p><p>原因是开启了 <code>cacheComponents</code> 后，Header 里 <code>await auth()</code> 会挡住预渲染。登录状态已改到客户端用 <code>useSession()</code> 读取。</p><p>刷新 http://localhost:3005，左下角那个 <strong>1 Issue</strong> 应消失；登录/积分不受影响。</p></div>
+  <a class="imgwrap" href="screenshots/02_1f5891f0-a0a7-4424-8d17-3a75afe8a997-963285f7-47c5-4276-aad8-715917fcc469.png" target="_blank" rel="noopener">
+    <img src="screenshots/02_1f5891f0-a0a7-4424-8d17-3a75afe8a997-963285f7-47c5-4276-aad8-715917fcc469.png" alt="有个报错，如截图所示：" loading="lazy" />
+  </a>
+  <figcaption><span class="t">11:11</span> · #02 · Google OAuth</figcaption>
+</figure><figure class="shot" id="shot-03">
+  <blockquote class="q"><span class="label">问</span>有个报错，如截图所示：</blockquote>
+  <div class="ans"><p>已修好。</p><p>原因是开启了 <code>cacheComponents</code> 后，Header 里 <code>await auth()</code> 会挡住预渲染。登录状态已改到客户端用 <code>useSession()</code> 读取。</p><p>刷新 http://localhost:3005，左下角那个 <strong>1 Issue</strong> 应消失；登录/积分不受影响。</p></div>
+  <a class="imgwrap" href="screenshots/03_86248303-a7ef-4ace-87b1-a600e5b1b234-739ed016-8723-4733-bfe6-3c9459ea5ead.png" target="_blank" rel="noopener">
+    <img src="screenshots/03_86248303-a7ef-4ace-87b1-a600e5b1b234-739ed016-8723-4733-bfe6-3c9459ea5ead.png" alt="有个报错，如截图所示：" loading="lazy" />
+  </a>
+  <figcaption><span class="t">11:11</span> · #03 · Google OAuth</figcaption>
+</figure></div></section><section class="block"><h3>Stripe 密钥</h3><div class="grid"><figure class="shot" id="shot-04">
+  <blockquote class="q"><span class="label">问</span>如截图所示，我再创建后，之前的会被覆盖吗，还是会增加一给key</blockquote>
+  <div class="ans"><p>截图里这是 <strong>Standard keys（标准密钥）</strong>，不是 Restricted。</p><p><strong>不会「再多出一个」Secret key。</strong> 正式环境通常就这一对：</p><ul><li><code>pk_live_...</code> Publishable key</li><li><code>sk_live_...</code> Secret key</li></ul><p>你点的一般是：</p><p>| 操作 | 结果 |<br>|---|---|<br>| <strong>Reveal / 显示密钥</strong> | 只是把<strong>现有</strong>那串 <code>sk_live_...</code> 显示出来，<strong>不覆盖、不加新 key</strong> |<br>| <strong>Roll key / 滚动密钥</strong> | 会生成<strong>新的</strong> <code>sk_live_...</code>，旧的会在宽限期后失效（等于换新、废旧），不是并存两套长期可用 |</p><p>Restricted keys 才可以建很多个；Standard 的 Secret 始终是「这一条」，换就用 Roll。</p><p>你现在要上线：在 Secret key 那行点 <strong>Reveal</strong>，复制后写进服务器 Secrets 即可。本地继续用 <code>sk_test_...</code>，别把 live key 写进会提交的代码。</p></div>
+  <a class="imgwrap" href="screenshots/04_bd895d12-02d5-4723-a8c1-0d2972823334-7e1c761f-f3cc-465a-8d20-e3e9503e6a64.png" target="_blank" rel="noopener">
+    <img src="screenshots/04_bd895d12-02d5-4723-a8c1-0d2972823334-7e1c761f-f3cc-465a-8d20-e3e9503e6a64.png" alt="如截图所示，我再创建后，之前的会被覆盖吗，还是会增加一给key" loading="lazy" />
+  </a>
+  <figcaption><span class="t">14:52</span> · #04 · Stripe 密钥</figcaption>
+</figure><figure class="shot" id="shot-05">
+  <blockquote class="q"><span class="label">问</span>如截图所示 ，我要选择create secret key吗，因为之前key显示不全啊</blockquote>
+  <div class="ans"><p><strong>不用点 Create secret key。</strong></p><p><code>sk_live_...Swgm</code> 是故意遮住的，不是坏了。点现有那一行 Secret key 的 token（或右侧 <code>...</code>），选 <strong>Reveal / 显示密钥</strong>，会弹出完整 <code>sk_live_...</code>，复制一次即可。</p><p>只有这些情况才用 <strong>Create secret key</strong>：</p><ul><li>Reveal 不了、旧 key 丢了</li><li>想单独给这个项目一把新 key</li></ul><p>新建后旧 key 通常还在；不用的话再在 <code>...</code> 里删/滚掉，避免多把 live key 同时有效。</p></div>
+  <a class="imgwrap" href="screenshots/05_5985f680-24f9-4165-a727-9f2fbc8d8db0-472c7023-0964-41d2-8c7f-ac0eea11777a.png" target="_blank" rel="noopener">
+    <img src="screenshots/05_5985f680-24f9-4165-a727-9f2fbc8d8db0-472c7023-0964-41d2-8c7f-ac0eea11777a.png" alt="如截图所示 ，我要选择create secret key吗，因为之前key显示不全啊" loading="lazy" />
+  </a>
+  <figcaption><span class="t">14:55</span> · #05 · Stripe 密钥</figcaption>
+</figure><figure class="shot" id="shot-06">
+  <blockquote class="q"><span class="label">问</span>只有这些菜单</blockquote>
+  <div class="ans"><p>那就对上了：现在这把 <strong>Secret key 创建后只显示一次</strong>，之后菜单里<strong>没有 Reveal</strong>，只能看到 <code>sk_live_...Swgm</code> 这种遮罩。</p><p>你有两条路：</p><ul><li><strong>Create secret key</strong>（推荐你现在用）</li><li>会<strong>多一把</strong>新的 <code>sk_live_...</code>，旧的还在</li><li>创建时立刻复制完整密钥，写进上线 Secrets</li><li>旧 key 若别处还在用就先别删；确认没用再删</li></ul><ul><li><strong>Rotate key</strong></li><li>用新 key <strong>替换</strong>这把，旧 key 会失效</li><li>如果别的项目还在用这把 <code>sk_live_...Swgm</code>，<strong>别点 Rotate</strong></li></ul><p><strong>Copy API key ID</strong> 只是复制 key 的 ID，不是完整密钥，没用。</p><p>总结：完整密钥找不回来了，就点 <strong>Create secret key</strong>，弹出时马上复制；本地继续用测试 key，别把 live key 贴到聊天里。</p></div>
+  <a class="imgwrap" href="screenshots/06_9701ac45-4b7f-4422-9330-0aade7612005-b78e48a9-c2ac-4eae-82a3-e9b20ddc3bed.png" target="_blank" rel="noopener">
+    <img src="screenshots/06_9701ac45-4b7f-4422-9330-0aade7612005-b78e48a9-c2ac-4eae-82a3-e9b20ddc3bed.png" alt="只有这些菜单" loading="lazy" />
+  </a>
+  <figcaption><span class="t">14:56</span> · #06 · Stripe 密钥</figcaption>
+</figure><figure class="shot" id="shot-07">
+  <blockquote class="q"><span class="label">问</span>选择哪个</blockquote>
+  <div class="ans"><p>选第一个：<strong>Powering an integration you built</strong>。</p><p>这是你自己网站/后端（Next.js）调 Stripe API 用的。</p><p>后面两个别选：<br>- 第三方应用/插件<br>- 授权 AI agent（Cursor 等）</p></div>
+  <a class="imgwrap" href="screenshots/07_24dc1f22-7194-4e64-99e7-1faefb1045f5-3bc38a6c-f56a-4fdf-b946-1a30dce7e8f3.png" target="_blank" rel="noopener">
+    <img src="screenshots/07_24dc1f22-7194-4e64-99e7-1faefb1045f5-3bc38a6c-f56a-4fdf-b946-1a30dce7e8f3.png" alt="选择哪个" loading="lazy" />
+  </a>
+  <figcaption><span class="t">14:57</span> · #07 · Stripe 密钥</figcaption>
+</figure></div></section><section class="block"><h3>Cloudflare 注册</h3><div class="grid"><figure class="shot" id="shot-08">
+  <blockquote class="q"><span class="label">问</span>进来后是这个 ，如截图所示</blockquote>
+  <div class="ans"><p>对，这就是 Cloudflare Dashboard 首页，注册成功了。</p><p>接下来按清单点左侧这几块即可（现在不用全做完）：</p><p>| 要做的事 | 点哪里 |<br>|---|---|<br>| Workers | 左侧 <strong>Build → Compute</strong> |<br>| KV（<code>DUETBOOTH_KV</code>） | 左侧 <strong>Build → Storage &amp; databases</strong> |<br>| 域名 | 中间 <strong>Add a domain</strong>，或左侧 <strong>Domains</strong> |</p><p>中间那个 <strong>Create app</strong> 也可以，我们项目更适合用本地 <code>wrangler</code> / OpenNext 部署，不一定从「Create app」向导起步。</p><p>你现在有域名了吗？有的话可以先 <strong>Add a domain</strong>；没有也可以先建 KV，域名后补。</p></div>
+  <a class="imgwrap" href="screenshots/08_f18f36c4-eadf-4583-9b69-26178eade386-9a09d624-9138-4586-8754-58eed61d0005.png" target="_blank" rel="noopener">
+    <img src="screenshots/08_f18f36c4-eadf-4583-9b69-26178eade386-9a09d624-9138-4586-8754-58eed61d0005.png" alt="进来后是这个 ，如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">15:10</span> · #08 · Cloudflare 注册</figcaption>
+</figure></div></section><section class="block"><h3>Cloudflare KV</h3><div class="grid"><figure class="shot" id="shot-09">
+  <blockquote class="q"><span class="label">问</span>选哪个</blockquote>
+  <div class="ans"><p>选 <strong>Standard</strong>，然后点 <strong>Create</strong>。</p><p>Jurisdiction 是数据必须留在某国/地区才用；一般站点不需要。</p><p>名字用 <code>DUETBOOTH_KV</code> 也可以。创建后把页面上的 <strong>Namespace ID</strong> 复制留着。</p></div>
+  <a class="imgwrap" href="screenshots/09_3ec7fccb-d648-430c-bad5-5da871d6ed73-da462844-5e34-4f1f-87a9-fb8b63ba32ed.png" target="_blank" rel="noopener">
+    <img src="screenshots/09_3ec7fccb-d648-430c-bad5-5da871d6ed73-da462844-5e34-4f1f-87a9-fb8b63ba32ed.png" alt="选哪个" loading="lazy" />
+  </a>
+  <figcaption><span class="t">15:23</span> · #09 · Cloudflare KV</figcaption>
+</figure><figure class="shot" id="shot-10">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>对，<strong>KV 建好了</strong>。空的、没有 entries 是正常的——积分和任务会由程序自动写入，不用点 <strong>Add entry</strong>。</p><p>下一步：点顶部的 <strong>Settings</strong>，把 <strong>Namespace ID</strong> 复制发给我（一串类似 <code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code> 的 ID）。</p><p>有了 ID 我就可以在项目里写进 <code>wrangler.toml</code>，然后接 OpenNext 部署。</p></div>
+  <a class="imgwrap" href="screenshots/10_d234ac46-cb0f-4b64-b3b5-a559f45e8cfc-720e3212-c4b8-49c0-9604-c438700c6235.png" target="_blank" rel="noopener">
+    <img src="screenshots/10_d234ac46-cb0f-4b64-b3b5-a559f45e8cfc-720e3212-c4b8-49c0-9604-c438700c6235.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">15:25</span> · #10 · Cloudflare KV</figcaption>
+</figure><figure class="shot" id="shot-11">
+  <blockquote class="q"><span class="label">问</span>699306fe965d4c88b74511941bd0c2ff，如截图所示</blockquote>
+  <div class="ans"><p><strong>Namespace ID 已写入</strong> <code>wrangler.jsonc</code>：<code>699306fe965d4c88b74511941bd0c2ff</code>，绑定名 <code>DUETBOOTH_KV</code>。</p><p>同时已接好 OpenNext 脚手架：</p><ul><li><code>wrangler.jsonc</code>（Worker 名 <code>duetbooth</code>）</li><li><code>open-next.config.ts</code></li><li><code>pnpm deploy</code> / <code>pnpm preview</code> 脚本</li><li>README 检查清单已更新</li></ul><p>## 你这边接下来</p><p>1. 本机登录 Cloudflare：<br>```bash<br>cd /Users/zhaolei/newwords/video-effects<br>npx wrangler login<br>```<br>2. 登录成功后告诉我，我可以帮你跑第一次 <code>pnpm deploy</code>（会先用 <code>*.workers.dev</code> 地址）。<br>3. 上线前再用 <code>wrangler secret put ...</code> 写入 Stripe / KIE / Google 等密钥。</p><p><strong>现在不用在网页上建空白 Worker</strong>，部署命令会自动创建 <code>duetbooth</code>。</p></div>
+  <a class="imgwrap" href="screenshots/11_7883568a-498d-432d-92b8-d9192a414e5b-8709634e-d552-4fca-ae44-9098f21d3d87.png" target="_blank" rel="noopener">
+    <img src="screenshots/11_7883568a-498d-432d-92b8-d9192a414e5b-8709634e-d552-4fca-ae44-9098f21d3d87.png" alt="699306fe965d4c88b74511941bd0c2ff，如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">15:28</span> · #11 · Cloudflare KV</figcaption>
+</figure></div></section><section class="block"><h3>Cloudflare Worker</h3><div class="grid"><figure class="shot" id="shot-12">
+  <blockquote class="q"><span class="label">问</span>如截图所示，</blockquote>
+  <div class="ans"><p>登录没问题。代码也已经 <strong>build 成功</strong>，但部署停在这一步：</p><p><strong>账号还没注册 <code>workers.dev</code> 子域</strong>（第一次用 Workers 必做）。</p><p>请你本机浏览器打开：</p><p>https://dash.cloudflare.com/a37ddcd55479d60107a2583a7d0d6514/workers/onboarding</p><p>按提示选一个子域名字（例如 <code>zczlei</code> → 以后站点会是 <code>https://duetbooth.zczlei.workers.dev</code>），完成注册。</p><p>做完告诉我，我再跑一次 <code>pnpm deploy</code>。</p></div>
+  <a class="imgwrap" href="screenshots/12_10f89a72-1225-42fd-b30b-6e21f622824d-5633ae1e-5bce-4f7f-b3f3-ebeae6ed0744.png" target="_blank" rel="noopener">
+    <img src="screenshots/12_10f89a72-1225-42fd-b30b-6e21f622824d-5633ae1e-5bce-4f7f-b3f3-ebeae6ed0744.png" alt="如截图所示，" loading="lazy" />
+  </a>
+  <figcaption><span class="t">15:33</span> · #12 · Cloudflare Worker</figcaption>
+</figure><figure class="shot" id="shot-13">
+  <blockquote class="q"><span class="label">问</span>如截图所示 ，打开 dash.cloudflare.com/a37ddcd55479d60107a25…514/workers/onboarding  404</blockquote>
+  <div class="ans"><p>那个 onboarding 链接已经失效（404）。我改用 API 注册了子域 <strong><code>zczlei</code></strong>，并完成部署。</p><p><strong>线上地址：</strong> https://duetbooth.zczlei.workers.dev</p><p>KV <code>DUETBOOTH_KV</code> 已绑上。</p><p>注意：线上还没有 Stripe / KIE / Google 等 Secrets（<code>.env.local</code> 不会自动上去）。要付费和生成可用，下一步需要 <code>wrangler secret put ...</code>。要的话我可以按你本地 <code>.env.local</code> 一项项帮你写入（密钥不会再贴回聊天）。</p></div>
+  <a class="imgwrap" href="screenshots/13_2870d7e9-f606-4d54-bacb-27e0f0169d92-9a4bed06-a370-4548-8b48-11b773e2203f.png" target="_blank" rel="noopener">
+    <img src="screenshots/13_2870d7e9-f606-4d54-bacb-27e0f0169d92-9a4bed06-a370-4548-8b48-11b773e2203f.png" alt="如截图所示 ，打开 dash.cloudflare.com/a37ddcd55479d60107a25…514/workers/onboarding  404" loading="lazy" />
+  </a>
+  <figcaption><span class="t">15:36</span> · #13 · Cloudflare Worker</figcaption>
+</figure></div></section><section class="block"><h3>线上验证</h3><div class="grid"><figure class="shot" id="shot-14">
+  <blockquote class="q"><span class="label">问</span>现在打开页面，见截图</blockquote>
+  <div class="ans"><p>原因是 Next.js 16.4 的 <code>preview-props.json</code> 未被 OpenNext 内联。正在打补丁并重新部署。</p></div>
+  <a class="imgwrap" href="screenshots/14_b185a764-001a-422d-938e-bac354395027-cfdb502c-5f14-4769-bac2-1cdf2cbe3fb5.png" target="_blank" rel="noopener">
+    <img src="screenshots/14_b185a764-001a-422d-938e-bac354395027-cfdb502c-5f14-4769-bac2-1cdf2cbe3fb5.png" alt="现在打开页面，见截图" loading="lazy" />
+  </a>
+  <figcaption><span class="t">15:39</span> · #14 · 线上验证</figcaption>
+</figure></div></section><section class="block"><h3>域名接入</h3><div class="grid"><figure class="shot" id="shot-15">
+  <blockquote class="q"><span class="label">问</span>选哪个</blockquote>
+  <div class="ans"><p>选第一个：<strong>Connect a domain</strong>。</p><p>域名还在 GoDaddy，只是把 DNS/加速交给 Cloudflare，方便绑 Worker。不用 Transfer（搬家注册商），也不用 Buy。</p></div>
+  <a class="imgwrap" href="screenshots/15_76a05a67-7684-4929-a54d-5436b242f57f-1497095c-ef2c-4efb-8bee-f5756951c070.png" target="_blank" rel="noopener">
+    <img src="screenshots/15_76a05a67-7684-4929-a54d-5436b242f57f-1497095c-ef2c-4efb-8bee-f5756951c070.png" alt="选哪个" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:30</span> · #15 · 域名接入</figcaption>
+</figure><figure class="shot" id="shot-16">
+  <blockquote class="q"><span class="label">问</span>如截图所示，填哪些</blockquote>
+  <div class="ans"><p>这样填即可：</p><ul><li><strong>Domain name</strong>：填 <code>duetbooth.co</code>（不要加 <code>https://</code> 或 <code>www</code>）</li><li><strong>I monetize pages that serve ads</strong>：不勾（你们是卖积分，不是广告站）</li><li><strong>Search / Agent / Training</strong>：保持默认 <strong>Allow (Recommended)</strong> 就行</li><li><strong>Enable Bot Preference Sync</strong>：保持开着即可</li><li><strong>Import DNS Records</strong>：保持 <strong>Automatic</strong></li><li>点 <strong>Continue</strong></li></ul><p>后面选套餐选 <strong>Free</strong>，再按提示去 GoDaddy 改 Nameserver。</p></div>
+  <a class="imgwrap" href="screenshots/16_0fc05502-c809-459b-9718-b07b0c0be872-436a5683-bd38-4798-b8c2-eb572ef81ba4.png" target="_blank" rel="noopener">
+    <img src="screenshots/16_0fc05502-c809-459b-9718-b07b0c0be872-436a5683-bd38-4798-b8c2-eb572ef81ba4.png" alt="如截图所示，填哪些" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:32</span> · #16 · 域名接入</figcaption>
+</figure></div></section><section class="block"><h3>域名 DNS</h3><div class="grid"><figure class="shot" id="shot-17">
+  <blockquote class="q"><span class="label">问</span>这个如何操作</blockquote>
+  <div class="ans"><p>这页是在确认 DNS 记录。GoDaddy 自动导入的那些 A 记录（<code>15.197…</code> / <code>3.33…</code>）是<strong>停车页</strong>，不是你的 Worker，先不用管它们。</p><p>## 现在怎么做</p><ul><li><strong>直接点底部的「Continue to activation」</strong></li><li>下一页会给出 <strong>两个 Cloudflare Nameserver</strong>（类似 <code>xxx.ns.cloudflare.com</code>）</li><li>去 <strong>GoDaddy</strong> → 域名 <code>duetbooth.co</code> → Nameservers → 改成 Cloudflare 那两个 → 保存</li><li>回到 Cloudflare，等状态变成 <strong>Active</strong>（几分钟到几小时）</li></ul><p>## Active 之后</p><p>到 Worker <strong><code>duetbooth</code></strong> → Domains → 添加 <code>duetbooth.co</code>（和可选的 <code>www</code>）。<br>绑好后 Cloudflare 会自动配好指向 Worker 的记录；那些停车页 A 记录如果还在，可以再删掉，避免冲突。</p><p><strong>Proxied（橙云）/ DNS only（灰云）</strong>：这页先别改。绑 Worker 自定义域时系统会处理好。</p><p>总结：这页点 <strong>Continue to activation</strong> → 去 GoDaddy 改 NS → 等 Active → 再绑 Worker。</p></div>
+  <a class="imgwrap" href="screenshots/17_860e878a-d640-4bd7-be2c-2c8ab344ffe0-95311fdc-b51e-40b4-8790-4ea3cb5b87d0.png" target="_blank" rel="noopener">
+    <img src="screenshots/17_860e878a-d640-4bd7-be2c-2c8ab344ffe0-95311fdc-b51e-40b4-8790-4ea3cb5b87d0.png" alt="这个如何操作" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:35</span> · #17 · 域名 DNS</figcaption>
+</figure></div></section><section class="block"><h3>Nameserver</h3><div class="grid"><figure class="shot" id="shot-18">
+  <blockquote class="q"><span class="label">问</span>如截图所示，</blockquote>
+  <div class="ans"><p>对，就是这一步。去 <strong>GoDaddy</strong> 把 Nameserver 换成 Cloudflare 这两个：</p><p>```<br>daniella.ns.cloudflare.com<br>rene.ns.cloudflare.com<br>```</p><p>## GoDaddy 操作</p><p>1. 登录 GoDaddy → 我的产品 → <strong><code>duetbooth.co</code></strong> → <strong>DNS</strong> / <strong>Nameservers</strong><br>2. 点 <strong>Change</strong> / <strong>更改</strong><br>3. 选 <strong>I’ll use my own nameservers</strong>（使用我自己的命名服务器）<br>   （不要继续用 GoDaddy 默认）<br>4. <strong>删掉</strong>原来的：<br>   - <code>ns41.domaincontrol.com</code><br>   - <code>ns42.domaincontrol.com</code><br>5. <strong>填上</strong>上面两个 Cloudflare 地址（各一行）<br>6. <strong>保存</strong></p><p>改完回到 Cloudflare，等状态变成 <strong>Active</strong>（常几分钟到几小时）。变成 Active 后再把域名绑到 Worker <code>duetbooth</code>。</p></div>
+  <a class="imgwrap" href="screenshots/18_195fcecc-5178-4e3c-a3fa-bd53a1099838-39a09663-dccc-4344-9d3e-29d3ba0fa594.png" target="_blank" rel="noopener">
+    <img src="screenshots/18_195fcecc-5178-4e3c-a3fa-bd53a1099838-39a09663-dccc-4344-9d3e-29d3ba0fa594.png" alt="如截图所示，" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:36</span> · #18 · Nameserver</figcaption>
+</figure><figure class="shot" id="shot-19">
+  <blockquote class="q"><span class="label">问</span>如截图所示：</blockquote>
+  <div class="ans"><p>GoDaddy 这边已经改对了：两个 NS 都是 Cloudflare 的，不用再点 Change Nameservers。</p><p>## 下一步</p><p>1. 回到 <strong>Cloudflare</strong> 里 <code>duetbooth.co</code> 的页面<br>2. 看状态是否已是 <strong>Active</strong><br>   - 还是 Pending：点 <strong>Check nameservers</strong> / 刷新等一会儿<br>3. 变成 Active 后：<br>   <strong>Compute</strong> → Worker <strong><code>duetbooth</code></strong> → <strong>Domains</strong> → 添加 <strong><code>duetbooth.co</code></strong>（可选再加 <code>www.duetbooth.co</code>）</p><p>GoDaddy 上的 <strong>IDLE</strong> 一般只是域名未挂旧主机，不影响；NS 已指向 Cloudflare 即可。</p><p>Cloudflare 显示 Active 或域名已经能打开时告诉我，我帮你改线上的 <code>NEXT_PUBLIC_APP_URL</code> / <code>AUTH_URL</code>。</p></div>
+  <a class="imgwrap" href="screenshots/19_3a180ece-717f-4670-91e8-42563fdc5df5-2f2a0962-fbe4-4497-92b4-d0eab0e2d428.png" target="_blank" rel="noopener">
+    <img src="screenshots/19_3a180ece-717f-4670-91e8-42563fdc5df5-2f2a0962-fbe4-4497-92b4-d0eab0e2d428.png" alt="如截图所示：" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:40</span> · #19 · Nameserver</figcaption>
+</figure><figure class="shot" id="shot-20">
+  <blockquote class="q"><span class="label">问</span>上次停留的界面，如截图所示</blockquote>
+  <div class="ans"><p>GoDaddy 已经改过 NS 了，这页不用再填东西。</p><p>直接点蓝色按钮：<strong>I updated my nameservers</strong>。</p><p>Cloudflare 会去检测。若还显示 Pending，等几分钟再点一次检查即可。</p><p>下面 Recommended：<br>- <strong>DNSSEC</strong>：去 GoDaddy 确认是关的（多数默认就关）<br>- <strong>Only allow Cloudflare IP…</strong>：可以忽略（你们用 Worker，没有自己的源站防火墙）</p><p>点完按钮后，看 Overview 是否变成 <strong>Active</strong>。变成 Active 再去绑 Worker 域名。</p></div>
+  <a class="imgwrap" href="screenshots/20_c2e32400-b3e0-4507-98a0-561efe9b185f-6b5122c5-2000-4615-94a1-a6d14139c1c2.png" target="_blank" rel="noopener">
+    <img src="screenshots/20_c2e32400-b3e0-4507-98a0-561efe9b185f-6b5122c5-2000-4615-94a1-a6d14139c1c2.png" alt="上次停留的界面，如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:41</span> · #20 · Nameserver</figcaption>
+</figure></div></section><section class="block"><h3>域名激活</h3><div class="grid"><figure class="shot" id="shot-21">
+  <blockquote class="q"><span class="label">问</span>变成这个页面</blockquote>
+  <div class="ans"><p>公共 DNS 已经指向 Cloudflare 了（生效很快）。</p><p>现在你可以：</p><ul><li>点 <strong>Check nameservers now</strong></li><li>若还 Pending，过几分钟再点一次，直到变成 <strong>Active</strong></li></ul><p>Active 之后右侧 <strong>Workers → Connect Worker</strong>（或进 Worker <code>duetbooth</code> → Domains）把 <strong><code>duetbooth.co</code></strong> 连上。</p><p>连好告诉我，我帮你改线上 URL 配置。</p></div>
+  <a class="imgwrap" href="screenshots/21_2c445b38-cc8a-4223-9bd6-353eee52d88d-664309ec-0325-446a-8116-e4170f891467.png" target="_blank" rel="noopener">
+    <img src="screenshots/21_2c445b38-cc8a-4223-9bd6-353eee52d88d-664309ec-0325-446a-8116-e4170f891467.png" alt="变成这个页面" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:43</span> · #21 · 域名激活</figcaption>
+</figure></div></section><section class="block"><h3>域名 / Worker</h3><div class="grid"><figure class="shot" id="shot-22">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>这页就是在<strong>等 Cloudflare 自己确认</strong>，正常。NS 其实已经生效了（公网已指向 Cloudflare）。</p><ul><li>站点：<code>duetbooth.zczlei.workers.dev</code> 仍可用（200）</li><li><code>duetbooth.co</code> 现在是 <strong>525</strong>（流量到了 CF，但还指向 GoDaddy 停车页，证书没接好）——等 Active 后绑 Worker 就会好</li></ul><p>## 你现在可以</p><p>1. <strong>先放着</strong>，过半小时～2 小时再刷新 Overview，直到不再显示 Waiting<br>2. 或者右侧直接点 <strong>Connect Worker</strong> → 选已有的 <strong><code>duetbooth</code></strong> → 主机名填 <code>duetbooth.co</code><br>   （有时 Pending 也能连；连不上就等 Active 再试）</p><p><strong>不用再改 GoDaddy。</strong> 变成 Active 或绑好 Worker 后告诉我，我帮你改 <code>NEXT_PUBLIC_APP_URL</code>。</p></div>
+  <a class="imgwrap" href="screenshots/22_d20950d1-0675-4cdd-853d-ab55e5fea21b-b6d6ff56-e619-462f-a352-ff976b60fdc1.png" target="_blank" rel="noopener">
+    <img src="screenshots/22_d20950d1-0675-4cdd-853d-ab55e5fea21b-b6d6ff56-e619-462f-a352-ff976b60fdc1.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:45</span> · #22 · 域名 / Worker</figcaption>
+</figure><figure class="shot" id="shot-23">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>域名已经 <strong>Active</strong> 了。下一步把站绑上去：</p><p>右侧 <strong>Workers</strong> → 点 <strong>Connect Worker</strong>（不要点 Create Worker）→ 选已有的 <strong><code>duetbooth</code></strong> → 主机名填 <strong><code>duetbooth.co</code></strong>。</p><p>有 <code>www</code> 的话再连一次 <code>www.duetbooth.co</code>，或之后在 DNS 里把 www CNAME 到根域。</p><p>绑好后告诉我，我帮你把线上 URL 改成 <code>https://duetbooth.co</code>。</p></div>
+  <a class="imgwrap" href="screenshots/23_625c8a84-e5d7-4b05-94ac-ffc09c99ba18-eb398b79-0dbe-4a93-8ebd-0f2cf469b904.png" target="_blank" rel="noopener">
+    <img src="screenshots/23_625c8a84-e5d7-4b05-94ac-ffc09c99ba18-eb398b79-0dbe-4a93-8ebd-0f2cf469b904.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:46</span> · #23 · 域名 / Worker</figcaption>
+</figure><figure class="shot" id="shot-24">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>你进的是 <strong>Workers Routes</strong>（域名下的路由页），可以在这里绑。</p><p>## 在这页操作</p><ul><li>点蓝色 <strong>Add route</strong></li><li>填写：</li><li><strong>Route</strong>：<code>duetbooth.co/*</code></li><li><strong>Worker</strong>：选 <strong><code>duetbooth</code></strong></li><li>保存</li><li>建议再加一条：<code>www.duetbooth.co/*</code> → 同一个 Worker <code>duetbooth</code></li></ul><p>## 若提示冲突</p><p>去 <strong>DNS → DNS Records</strong>，把指向停车页的那两条 <strong>A 记录</strong>（<code>15.197…</code> / <code>3.33…</code>）删掉，再保存路由。</p><p>---</p><p>也可以换入口（效果一样或更好）：<br>左侧回到账号级 <strong>Compute / Workers</strong> → 点开 Worker <strong><code>duetbooth</code></strong> → <strong>Domains</strong> → Add <strong><code>duetbooth.co</code></strong></p><p>绑好后打开 https://duetbooth.co 能出首页就告诉我，我帮你改线上 URL。</p></div>
+  <a class="imgwrap" href="screenshots/24_2b6c933c-39aa-4ab4-b2f7-cc6cca4d8941-9fa70802-4cbd-4f6a-ba53-6f9e9c025bc7.png" target="_blank" rel="noopener">
+    <img src="screenshots/24_2b6c933c-39aa-4ab4-b2f7-cc6cca4d8941-9fa70802-4cbd-4f6a-ba53-6f9e9c025bc7.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:47</span> · #24 · 域名 / Worker</figcaption>
+</figure></div></section><section class="block"><h3>自定义域</h3><div class="grid"><figure class="shot" id="shot-25">
+  <blockquote class="q"><span class="label">问</span>我走的这个：也可以换入口（效果一样或更好）：
+左侧回到账号级 Compute / Workers → 点开 Worker duetbooth → Domains → Add duetbooth.co，如截图所示</blockquote>
+  <div class="ans"><p>对，就是这个入口。接着点：</p><ul><li>顶部菜单点 <strong>Domains</strong>（Overview 右边那个）</li><li>在 <strong>Custom domains</strong> 里点 <strong>Add</strong> / <strong>Set up a domain</strong></li><li>填 <strong><code>duetbooth.co</code></strong> → 确认</li><li>建议再加一个 <strong><code>www.duetbooth.co</code></strong></li></ul><p>右侧现在 Custom domains 是 <code>—</code>，加完后会出现 <code>duetbooth.co</code>。</p><p>若提示 DNS 冲突：先去域名 <code>duetbooth.co</code> 的 <strong>DNS Records</strong>，删掉那两条停车页 A 记录，再回来加自定义域。</p><p>加成功后打开 https://duetbooth.co 试一下，能开首页再告诉我。</p></div>
+  <a class="imgwrap" href="screenshots/25_1c7f4e8f-5557-4fe0-a392-67e90c286b72-eb320d2d-5a4c-4bce-a8cf-c928f7c0644b.png" target="_blank" rel="noopener">
+    <img src="screenshots/25_1c7f4e8f-5557-4fe0-a392-67e90c286b72-eb320d2d-5a4c-4bce-a8cf-c928f7c0644b.png" alt="我走的这个：也可以换入口（效果一样或更好）：
+左侧回到账号级 Compute / Workers → 点开 Worker duetbooth → Domains → Add duetbooth.co，如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:51</span> · #25 · 自定义域</figcaption>
+</figure><figure class="shot" id="shot-26">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>对，就是这页。</p><p>点蓝色 <strong>+ Add Domain</strong> → 填入 <strong><code>duetbooth.co</code></strong> → 确认添加。</p><p>成功后再点一次，加 <strong><code>www.duetbooth.co</code></strong>（可选）。</p><p>出现冲突就先去域名 DNS 删掉那两条停车页 A 记录，再回来加。</p></div>
+  <a class="imgwrap" href="screenshots/26_c557c536-5400-4863-ae8c-783df2e5393c-7f1646a0-af7d-421c-b80c-d27a44aacf38.png" target="_blank" rel="noopener">
+    <img src="screenshots/26_c557c536-5400-4863-ae8c-783df2e5393c-7f1646a0-af7d-421c-b80c-d27a44aacf38.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:52</span> · #26 · 自定义域</figcaption>
+</figure><figure class="shot" id="shot-27">
+  <blockquote class="q"><span class="label">问</span>如截图所示，不用填写吧</blockquote>
+  <div class="ans"><p>对，<strong>Subdomain 留空</strong>（就是根域 <code>duetbooth.co</code>）。</p><p><strong>Enable for</strong> 保持 <strong>Production</strong>，然后点 <strong>Add domain</strong>。</p></div>
+  <a class="imgwrap" href="screenshots/27_5dfe69b0-3901-453c-a539-f6e1de10a2f6-c0960358-2c76-44bd-a20a-e22a018185f5.png" target="_blank" rel="noopener">
+    <img src="screenshots/27_5dfe69b0-3901-453c-a539-f6e1de10a2f6-c0960358-2c76-44bd-a20a-e22a018185f5.png" alt="如截图所示，不用填写吧" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:53</span> · #27 · 自定义域</figcaption>
+</figure><figure class="shot" id="shot-28">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>报错是因为根域上还有旧 DNS 记录（GoDaddy 停车页那两条 A）。先删掉再加。</p><p>## 操作</p><ul><li>点 <strong>Cancel</strong> 关掉这个弹窗</li><li>打开域名管理：Dashboard → 选中 <strong><code>duetbooth.co</code></strong> → <strong>DNS</strong> → <strong>DNS Records</strong></li><li>找到并 <strong>Delete</strong> 这些指向根域的记录：</li><li><code>duetbooth.co</code> 的 <strong>A</strong>（<code>15.197…</code>、<code>3.33…</code> 之类）</li><li>若有根域的 <strong>CNAME</strong> 也删</li><li><strong>保留</strong> <code>_dmarc</code> 等 TXT 可以；<code>_domainconnect</code> 可删可留</li><li>回到 Worker <strong><code>duetbooth</code> → Domains → Add Domain</strong>，Subdomain 仍留空 → <strong>Add domain</strong></li></ul><p>删完根域 A/CNAME 后再加，一般就能成功。</p></div>
+  <a class="imgwrap" href="screenshots/28_185c85a4-c615-44c3-9df6-364851d23791-559f7b38-a05a-486e-ace8-ca7e1cffb754.png" target="_blank" rel="noopener">
+    <img src="screenshots/28_185c85a4-c615-44c3-9df6-364851d23791-559f7b38-a05a-486e-ace8-ca7e1cffb754.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:53</span> · #28 · 自定义域</figcaption>
+</figure></div></section><section class="block"><h3>DNS 清理</h3><div class="grid"><figure class="shot" id="shot-29">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>对，就是 Cloudflare 这个页面。</p><p><strong>删除这两条 A 记录</strong>（根域停车页）：</p><ul><li><code>duetbooth.co</code> → <code>15.197.148.33</code></li><li><code>duetbooth.co</code> → <code>3.33.130.190</code></li></ul><p>每行右侧点 <strong>…</strong> / Edit → <strong>Delete</strong>。</p><p><strong>建议也删：</strong></p><ul><li><code>_domainconnect...</code> 那条 CNAME（GoDaddy 连接用，绑 Worker 不需要）</li></ul><p><strong>先留着：</strong></p><ul><li><code>www</code> → <code>duetbooth.co</code>（等会儿可以再给 www 加自定义域，或之后改）</li><li><code>_dmarc</code> TXT</li></ul><p>删完两条 A 后，回到 Worker <strong><code>duetbooth</code> → Domains → Add Domain</strong>，Subdomain 留空 → Add。</p></div>
+  <a class="imgwrap" href="screenshots/29_ac7d36ce-d187-402c-aeec-00bca4c4c0d0-ff312f8b-35ef-40d6-9197-b157540c9766.png" target="_blank" rel="noopener">
+    <img src="screenshots/29_ac7d36ce-d187-402c-aeec-00bca4c4c0d0-ff312f8b-35ef-40d6-9197-b157540c9766.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:56</span> · #29 · DNS 清理</figcaption>
+</figure><figure class="shot" id="shot-30">
+  <blockquote class="q"><span class="label">问</span>已经删除了</blockquote>
+  <div class="ans"><p>很好，DNS 清干净了。</p><p>现在回去：</p><p><strong>Compute → Workers → <code>duetbooth</code> → Domains → + Add Domain</strong><br>Subdomain <strong>留空</strong> → Enable for <strong>Production</strong> → <strong>Add domain</strong></p><p>成功后再可选加一次 <code>www</code>（Subdomain 填 <code>www</code>）。</p><p>加完打开 https://duetbooth.co ，能出首页就告诉我，我帮你改线上 <code>NEXT_PUBLIC_APP_URL</code> / <code>AUTH_URL</code>。</p></div>
+  <a class="imgwrap" href="screenshots/30_ece2289e-04c1-4a52-aacc-697937f4c133-0b6d2f5f-4793-4444-9836-d936e0b3cc4f.png" target="_blank" rel="noopener">
+    <img src="screenshots/30_ece2289e-04c1-4a52-aacc-697937f4c133-0b6d2f5f-4793-4444-9836-d936e0b3cc4f.png" alt="已经删除了" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:58</span> · #30 · DNS 清理</figcaption>
+</figure></div></section><section class="block"><h3>域名绑定</h3><div class="grid"><figure class="shot" id="shot-31">
+  <blockquote class="q"><span class="label">问</span>如截图所示：</blockquote>
+  <div class="ans"><p>根域 <strong><code>duetbooth.co</code> 已经加上了</strong>（背景列表里有）。报错只是加 <strong>www</strong> 时和现有 <code>www</code> CNAME 冲突。</p><p>## 二选一</p><p><strong>A（推荐先这样）：</strong> 点 <strong>Cancel</strong>，先只用 <code>https://duetbooth.co</code>。www 以后再说。</p><p><strong>B（也要 www）：</strong><br>1. Cancel<br>2. DNS Records 里 <strong>删掉</strong> <code>www → duetbooth.co</code> 那条 CNAME<br>3. 再 Add Domain，Subdomain 填 <code>www</code></p><p>我先帮你把线上地址改成正式域名。</p></div>
+  <a class="imgwrap" href="screenshots/31_46dc6047-ba35-4e21-b218-38a20bd78393-606e0025-713c-4461-bcf3-d3dfa6c4a737.png" target="_blank" rel="noopener">
+    <img src="screenshots/31_46dc6047-ba35-4e21-b218-38a20bd78393-606e0025-713c-4461-bcf3-d3dfa6c4a737.png" alt="如截图所示：" loading="lazy" />
+  </a>
+  <figcaption><span class="t">16:59</span> · #31 · 域名绑定</figcaption>
+</figure></div></section><section class="block"><h3>配置确认</h3><div class="grid"><figure class="shot" id="shot-32">
+  <blockquote class="q"><span class="label">问</span>如截图所示，现在改成什么</blockquote>
+  <div class="ans"><p><strong>不用删掉 localhost</strong>，在原有基础上 <strong>再加</strong> 线上这两项：</p><p>## 已获授权的 JavaScript 来源</p><p>保留：<br>- <code>http://localhost:3005</code></p><p>再加：<br>- <code>https://duetbooth.co</code></p><p>（以后有 www 再加 <code>https://www.duetbooth.co</code>）</p><p>## 已获授权的重定向 URI</p><p>保留：<br>- <code>http://localhost:3005/api/auth/callback/google</code></p><p>再加：<br>- <code>https://duetbooth.co/api/auth/callback/google</code></p><p>点 <strong>保存</strong>。生效可能要几分钟。客户端 ID / 密钥不用换（和线上 Secrets 里已有的是同一套）。</p></div>
+  <a class="imgwrap" href="screenshots/32_641cc320-2836-4880-97fa-412d2252f4fa-4bea4080-7785-4e59-8e09-7e0772e50766.png" target="_blank" rel="noopener">
+    <img src="screenshots/32_641cc320-2836-4880-97fa-412d2252f4fa-4bea4080-7785-4e59-8e09-7e0772e50766.png" alt="如截图所示，现在改成什么" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:02</span> · #32 · 配置确认</figcaption>
+</figure></div></section><section class="block"><h3>Stripe Webhook</h3><div class="grid"><figure class="shot" id="shot-33">
+  <blockquote class="q"><span class="label">问</span>如何进入 webhook页面</blockquote>
+  <div class="ans"><p>从你截图的侧边栏进：</p><ul><li>点最下面的 <strong>开发人员（Developers）</strong></li><li>再点 <strong>Webhooks</strong></li><li>确认右上角 <strong>Test mode 已关闭</strong>（正式模式）</li><li>点 <strong>添加端点 / Add endpoint</strong></li></ul><p>端点 URL 填：</p><p><code>https://duetbooth.co/api/webhook/stripe</code></p><p>事件至少选：<code>checkout.session.completed</code>（没有「全选」就搜 checkout 勾相关的）</p><p>创建后复制 <strong>Signing secret</strong>（<code>whsec_...</code>）发我，或自己写入线上 Secrets。</p><p>也可直接打开：https://dashboard.stripe.com/webhooks</p></div>
+  <a class="imgwrap" href="screenshots/33_8a65266f26539d8ed78fbc6608e73a37-4e586488-6109-4475-82b6-fffe883ac762.png" target="_blank" rel="noopener">
+    <img src="screenshots/33_8a65266f26539d8ed78fbc6608e73a37-4e586488-6109-4475-82b6-fffe883ac762.png" alt="如何进入 webhook页面" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:12</span> · #33 · Stripe Webhook</figcaption>
+</figure><figure class="shot" id="shot-34">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>对，就是这页。</p><p>点右上角紫色 <strong>+ Add destination</strong>，然后：</p><ul><li>类型选 <strong>Webhook endpoint</strong>（网页钩子）</li><li><strong>Endpoint URL</strong> 填：<code>https://duetbooth.co/api/webhook/stripe</code></li><li>事件选至少：<code>checkout.session.completed</code>（可搜 checkout）</li><li>名称可写：<code>duetbooth</code></li><li>创建完成后打开这个 destination，复制 <strong>Signing secret</strong>（<code>whsec_...</code>）发我</li></ul><p>现有的 theme-shop / tokit.ai 不用动，新建一条给 DuetBooth。确认是 <strong>正式模式</strong>（不是 Sandbox / Test）。</p></div>
+  <a class="imgwrap" href="screenshots/34_caceca96-cd63-44f6-9a2c-57b14da665d8-b1b40b06-157d-494f-b2a0-4eb3c110164d.png" target="_blank" rel="noopener">
+    <img src="screenshots/34_caceca96-cd63-44f6-9a2c-57b14da665d8-b1b40b06-157d-494f-b2a0-4eb3c110164d.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:15</span> · #34 · Stripe Webhook</figcaption>
+</figure><figure class="shot" id="shot-35">
+  <blockquote class="q"><span class="label">问</span>见截图</blockquote>
+  <div class="ans"><p>勾选这一条即可：</p><p><strong><code>checkout.session.completed</code></strong></p><p>其它（async_payment_failed / expired 等）可以不勾，代码目前只处理 completed。</p><p>勾完点 <strong>Continue →</strong>，继续填 URL：<code>https://duetbooth.co/api/webhook/stripe</code>。</p></div>
+  <a class="imgwrap" href="screenshots/35_3dcc1ee0-fa25-4acc-a7e8-0af220a28c74-c0625a30-acef-4732-b040-3a91e9917c04.png" target="_blank" rel="noopener">
+    <img src="screenshots/35_3dcc1ee0-fa25-4acc-a7e8-0af220a28c74-c0625a30-acef-4732-b040-3a91e9917c04.png" alt="见截图" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:18</span> · #35 · Stripe Webhook</figcaption>
+</figure><figure class="shot" id="shot-36">
+  <blockquote class="q"><span class="label">问</span>我勾选了4条，应该没影响吧</blockquote>
+  <div class="ans"><p>没影响。多勾的那几条 Stripe 会推过来，代码里只会处理 <code>checkout.session.completed</code>，其它会忽略，不会出错。</p><p>继续点 <strong>Continue →</strong> 填 URL：<code>https://duetbooth.co/api/webhook/stripe</code> 即可。</p></div>
+  <a class="imgwrap" href="screenshots/36_c5c333bb-d63d-49f6-bede-45a0817da6cd-6a11f23a-802e-4a4b-9b9d-a94f78018fbf.png" target="_blank" rel="noopener">
+    <img src="screenshots/36_c5c333bb-d63d-49f6-bede-45a0817da6cd-6a11f23a-802e-4a4b-9b9d-a94f78018fbf.png" alt="我勾选了4条，应该没影响吧" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:21</span> · #36 · Stripe Webhook</figcaption>
+</figure><figure class="shot" id="shot-37">
+  <blockquote class="q"><span class="label">问</span>这个选哪个</blockquote>
+  <div class="ans"><p>选第一个：<strong>Webhook endpoint</strong>，然后点 <strong>Continue →</strong>。</p></div>
+  <a class="imgwrap" href="screenshots/37_9eebc0ae-5b8b-467c-b40b-b044a334f771-1cc02b02-1723-47b8-9532-d61197b2eb42.png" target="_blank" rel="noopener">
+    <img src="screenshots/37_9eebc0ae-5b8b-467c-b40b-b044a334f771-1cc02b02-1723-47b8-9532-d61197b2eb42.png" alt="这个选哪个" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:21</span> · #37 · Stripe Webhook</figcaption>
+</figure><figure class="shot" id="shot-38">
+  <blockquote class="q"><span class="label">问</span>如截图所示 ，如何填写</blockquote>
+  <div class="ans"><p>这样填：</p><p>| 字段 | 填什么 |<br>|---|---|<br>| <strong>Destination name</strong> | <code>duetbooth</code>（随便起，好认就行） |<br>| <strong>Endpoint URL</strong> | <code>https://duetbooth.co/api/webhook/stripe</code> |<br>| <strong>Description</strong> | 可空，或写 <code>DuetBooth credits checkout</code> |</p><p>然后点 <strong>Create destination</strong>。</p><p>创建后进入这个 destination，找到 <strong>Signing secret</strong>，点 Reveal 复制 <code>whsec_...</code> 发我。</p></div>
+  <a class="imgwrap" href="screenshots/38_56496ccd-a705-4c5a-969f-948fc24ac3eb-b47a634f-338e-4466-8a84-281c285e5a79.png" target="_blank" rel="noopener">
+    <img src="screenshots/38_56496ccd-a705-4c5a-969f-948fc24ac3eb-b47a634f-338e-4466-8a84-281c285e5a79.png" alt="如截图所示 ，如何填写" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:23</span> · #38 · Stripe Webhook</figcaption>
+</figure></div></section><section class="block"><h3>www 跳转</h3><div class="grid"><figure class="shot" id="shot-39">
+  <blockquote class="q"><span class="label">问</span>如截图</blockquote>
+  <div class="ans"><p>点卡片 <strong>Redirect from WWW to root</strong> 上的 <strong>Create from template</strong>。</p><p>这就是 www → 主域（<code>duetbooth.co</code>），正是你要的。</p><p>下一页一般直接 <strong>Deploy</strong> / 保存即可，默认会做 301。不要选下面的 “Redirect from root to WWW”。</p></div>
+  <a class="imgwrap" href="screenshots/39_a5a73216-1319-4cf8-9444-4433676c17a1-b2de97b2-2e3a-4dfd-bf6d-945ef590c679.png" target="_blank" rel="noopener">
+    <img src="screenshots/39_a5a73216-1319-4cf8-9444-4433676c17a1-b2de97b2-2e3a-4dfd-bf6d-945ef590c679.png" alt="如截图" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:36</span> · #39 · www 跳转</figcaption>
+</figure><figure class="shot" id="shot-40">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>这页可以基本不动，按模板来。</p><ul><li><strong>Rule name</strong>：保持 <code>Redirect from WWW to root [Template]</code> 即可</li><li><strong>Request URL</strong>：保持 <code>https://www.*</code> 即可（在你这个站点上会匹配 <code>www.duetbooth.co</code>）</li><li>想写死也行：改成 <code>https://www.duetbooth.co/*</code></li><li><strong>往下滚到 Then...</strong>，确认大致是：</li><li>Status code：<strong>301</strong></li><li>Target：去掉 www 的根域（模板一般已填好，类似 <code>https://${1}</code> 或带路径保留）</li><li>点右下角 <strong>Deploy</strong> / <strong>Save</strong></li></ul><p>保存后用无痕窗口打开 <code>https://www.duetbooth.co</code>，应跳到 <code>https://duetbooth.co</code>。若 Then 那一块截图发我，我可以帮你对一下目标 URL。</p></div>
+  <a class="imgwrap" href="screenshots/40_7f4dba61-161e-4daa-be14-e96e021a01b0-6ef69372-2dfd-476b-9ab9-fbd745609511.png" target="_blank" rel="noopener">
+    <img src="screenshots/40_7f4dba61-161e-4daa-be14-e96e021a01b0-6ef69372-2dfd-476b-9ab9-fbd745609511.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:37</span> · #40 · www 跳转</figcaption>
+</figure><figure class="shot" id="shot-41">
+  <blockquote class="q"><span class="label">问</span>如截图</blockquote>
+  <div class="ans"><p>这页整体对，再确认两点后点 <strong>Deploy</strong>：</p><ul><li><strong>Request URL</strong> 必须是 <code>https://www.*</code>（<code>www.</code> 和 <code>*</code> 之间<strong>不要空格</strong>）</li><li><strong>Preserve query string</strong>：建议勾上（广告参数、<code>?</code> 后面的不会丢）</li></ul><p>其余保持：<br>- Target URL：<code>https://${1}</code><br>- Status code：<strong>301</strong></p><p>然后点蓝色 <strong>Deploy</strong>。</p></div>
+  <a class="imgwrap" href="screenshots/41_42c0df00-c338-4c3a-b6c9-8f75b27f15fb-4eb1284f-ea8a-43ae-b3ac-b4782eee9d90.png" target="_blank" rel="noopener">
+    <img src="screenshots/41_42c0df00-c338-4c3a-b6c9-8f75b27f15fb-4eb1284f-ea8a-43ae-b3ac-b4782eee9d90.png" alt="如截图" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:37</span> · #41 · www 跳转</figcaption>
+</figure><figure class="shot" id="shot-42">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>选第二个：<strong>Create a new proxied DNS record</strong>，再点 <strong>Deploy rule</strong>。</p><p>原因：跳转规则只对「走 Cloudflare 代理（橙云）」的流量生效；选这个会给 <code>www</code> 建一条代理记录，规则才能拦住。</p><p>若提示和 Worker 自定义域冲突：<br>1. 改选 <strong>Ignore and deploy rule anyway</strong> → Deploy<br>2. 去 <strong>DNS → Records</strong> 看 <code>www</code> 是否为<strong>橙云 Proxied</strong>；若是灰云，改成橙云</p><p>部署后用无痕窗口打开 <code>https://www.duetbooth.co</code>，应跳到 <code>https://duetbooth.co</code>。</p></div>
+  <a class="imgwrap" href="screenshots/42_6ec713bd-61ce-44eb-a499-f0d9641474db-42045794-2933-4580-9a40-04f9d56c2af7.png" target="_blank" rel="noopener">
+    <img src="screenshots/42_6ec713bd-61ce-44eb-a499-f0d9641474db-42045794-2933-4580-9a40-04f9d56c2af7.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:40</span> · #42 · www 跳转</figcaption>
+</figure><figure class="shot" id="shot-43">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>IPv4 填：<strong><code>192.0.2.1</code></strong>（Cloudflare 提示的占位地址，只为让 www 走橙云，真正访问会被 301 转到主域）。</p><p>然后点 <strong>Create record &amp; deploy rule</strong>。</p><p>Type 保持 <strong>A</strong>，Name 保持 <strong>www</strong>。</p></div>
+  <a class="imgwrap" href="screenshots/43_4b8a207b-3939-4acf-98b6-8df4af57447a-0cb7ff9c-99ce-4bfa-aa58-18f012e786b7.png" target="_blank" rel="noopener">
+    <img src="screenshots/43_4b8a207b-3939-4acf-98b6-8df4af57447a-0cb7ff9c-99ce-4bfa-aa58-18f012e786b7.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:43</span> · #43 · www 跳转</figcaption>
+</figure><figure class="shot" id="shot-44">
+  <blockquote class="q"><span class="label">问</span>有冲突。</blockquote>
+  <div class="ans"><p>有冲突是正常的：<code>www</code> 已经作为 Worker 自定义域存在，不能再新建一条 A 记录。</p><p>改选第一个：<strong>Ignore and deploy rule anyway</strong> → 再点 <strong>Deploy rule</strong>（或 Create… 旁变成 Deploy 的那个按钮）。</p><p><code>www</code> 已经在 Cloudflare 上，跳转规则一般能生效。部署后用无痕窗口打开 <code>https://www.duetbooth.co</code> 验证是否跳到 <code>https://duetbooth.co</code>。</p></div>
+  <a class="imgwrap" href="screenshots/44_48908909-c127-44c5-8805-460b8936edc8-6ff7027c-4cfa-4289-a514-f57b0b7a5a7d.png" target="_blank" rel="noopener">
+    <img src="screenshots/44_48908909-c127-44c5-8805-460b8936edc8-6ff7027c-4cfa-4289-a514-f57b0b7a5a7d.png" alt="有冲突。" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:44</span> · #44 · www 跳转</figcaption>
+</figure></div></section><section class="block"><h3>正式收款</h3><div class="grid"><figure class="shot" id="shot-45">
+  <blockquote class="q"><span class="label">问</span>如截图所示</blockquote>
+  <div class="ans"><p>规则已经生效，配置正确。</p><p>已验证：<code>https://www.duetbooth.co</code> → <strong>301</strong> → <code>https://duetbooth.co/</code>（200）。</p><p>可以正常用了。</p></div>
+  <a class="imgwrap" href="screenshots/45_b6576bc5-511f-463f-9502-5e28f6cfe2ac-4d6f0434-6828-4f55-9d38-161df6a44c8a.png" target="_blank" rel="noopener">
+    <img src="screenshots/45_b6576bc5-511f-463f-9502-5e28f6cfe2ac-4d6f0434-6828-4f55-9d38-161df6a44c8a.png" alt="如截图所示" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:45</span> · #45 · 正式收款</figcaption>
+</figure></div></section><section class="block"><h3>正式收款烟测</h3><div class="grid"><figure class="shot" id="shot-46">
+  <blockquote class="q"><span class="label">问</span>因为我要测试下正式的收费，所以，能否把如截图所示，4.9美金改成0.9美金，让我先测试下充值，积分就按4.9美金的给我</blockquote>
+  <div class="ans"><p>已改好并部署到线上。</p><ul><li><strong>Single Video</strong>：现收 <strong>$0.90</strong>（真扣款）</li><li><strong>积分</strong>：仍是 <strong>1 credit</strong>（和原来 $4.90 一样）</li><li>Three / Creator 套餐未改</li></ul><p>在 https://duetbooth.co 刷新后买 Single 即可测。测完说一声，我帮你改回 <strong>$4.90</strong>。</p></div>
+  <a class="imgwrap" href="screenshots/46_97bb70c4-9597-4b99-99a7-8af99d36b109-87a21d22-f79e-4a22-986c-5f2460a47a87.png" target="_blank" rel="noopener">
+    <img src="screenshots/46_97bb70c4-9597-4b99-99a7-8af99d36b109-87a21d22-f79e-4a22-986c-5f2460a47a87.png" alt="因为我要测试下正式的收费，所以，能否把如截图所示，4.9美金改成0.9美金，让我先测试下充值，积分就按4.9美金的给我" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:49</span> · #46 · 正式收款烟测</figcaption>
+</figure></div></section><section class="block"><h3>支付踩坑</h3><div class="grid"><figure class="shot" id="shot-47">
+  <blockquote class="q"><span class="label">问</span>为啥付费后跳转到如截图所示，本地的</blockquote>
+  <div class="ans"><p>原因已经定位，并修好了。</p><p><strong>原因：</strong> 创建 Stripe Checkout 时，<code>success_url</code> 来自 <code>getAppUrl()</code>。构建时读了 <code>.env.local</code> 里的 <code>NEXT_PUBLIC_APP_URL=http://localhost:3005</code>，Next 会把 <code>NEXT_PUBLIC_*</code> 打进产物，所以线上结账完成后仍跳回本机。本机用的是 test key，去查 <code>cs_live_…</code> 就会报 <code>No such checkout.session</code>，积分也加不上。</p><p><strong>已做：</strong><br>1. <code>getAppUrl()</code> 优先用运行时密钥 <code>APP_URL</code> / <code>AUTH_URL</code><br>2. 已写入 <code>APP_URL=https://duetbooth.co</code> 并重新部署</p><p><strong>这次已付的 $0.90：</strong> 在<strong>线上</strong>打开（同一浏览器、已登录）：</p><p><code>https://duetbooth.co/billing/success?effect=hotel-lobby&amp;session_id=cs_live_a1k47lksswlkYhMCiLWqd69GuSkCGy2oKwaTJ1DEMxKy4rCWmv2q4yZ8P3</code></p><p>应能确认并发放 1 credit。若 webhook 已到账，打开后会显示已入账。</p><p>之后在 [duetbooth.co](https://duetbooth.co) 再付一次，应会跳回正式域名，不再进 localhost。</p></div>
+  <a class="imgwrap" href="screenshots/47_3a329e7f-5d67-4867-9be1-c5ff6cf8b295-bd5dcadf-37b7-452c-b92b-6aa8c5803f24.png" target="_blank" rel="noopener">
+    <img src="screenshots/47_3a329e7f-5d67-4867-9be1-c5ff6cf8b295-bd5dcadf-37b7-452c-b92b-6aa8c5803f24.png" alt="为啥付费后跳转到如截图所示，本地的" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:55</span> · #47 · 支付踩坑</figcaption>
+</figure><figure class="shot" id="shot-48">
+  <blockquote class="q"><span class="label">问</span>现在还没看到积分，显示的还是0，如截图所示 ，是要刷新吗</blockquote>
+  <div class="ans"><p>Worker secrets 本应优先于打包进产物的 <code>.env.local</code>；线上仍查不到 <code>cs_live_</code>，说明 Cloudflare 上的 <code>STRIPE_SECRET_KEY</code> 很可能还是 test。正在找回 live key 并重新写入。</p></div>
+  <a class="imgwrap" href="screenshots/48_cce37967-7f6f-4ba2-8cfa-342054b2039e-94484b09-7530-4c4f-92b4-05a8bbce6bab.png" target="_blank" rel="noopener">
+    <img src="screenshots/48_cce37967-7f6f-4ba2-8cfa-342054b2039e-94484b09-7530-4c4f-92b4-05a8bbce6bab.png" alt="现在还没看到积分，显示的还是0，如截图所示 ，是要刷新吗" loading="lazy" />
+  </a>
+  <figcaption><span class="t">17:58</span> · #48 · 支付踩坑</figcaption>
+</figure></div></section><section class="block"><h3>产品确认</h3><div class="grid"><figure class="shot" id="shot-49">
+  <blockquote class="q"><span class="label">问</span>这个是单个照片生成视频吗</blockquote>
+  <div class="ans"><p>对。<strong>Street Zombie</strong>（<code>zombie-trend</code>）是 <strong>1 张人像照片 → 一段 8 秒 9:16 视频</strong>，消耗 <strong>1 credit</strong>。</p><p>和 Hotel Lobby 不同：Hotel Lobby 要 <strong>两张</strong> 照片做对口型/双人；Rain Dance、Zombie 都是单图。</p></div>
+  <a class="imgwrap" href="screenshots/49_a929c61a-88c6-469d-b10d-91a2f4d04f89-a4d8a656-ffdb-4e42-b992-c0d72bbb604b.png" target="_blank" rel="noopener">
+    <img src="screenshots/49_a929c61a-88c6-469d-b10d-91a2f4d04f89-a4d8a656-ffdb-4e42-b992-c0d72bbb604b.png" alt="这个是单个照片生成视频吗" loading="lazy" />
+  </a>
+  <figcaption><span class="t">18:13</span> · #49 · 产品确认</figcaption>
+</figure></div></section><section class="block"><h3>生成踩坑</h3><div class="grid"><figure class="shot" id="shot-50">
+  <blockquote class="q"><span class="label">问</span>报错，见截图</blockquote>
+  <div class="ans"><p>原因已经对上，并已上线修复。</p><p><strong>原因：</strong> 页面把照片以 <code>data:</code> base64 直接塞给 KIE。小图偶尔能过，真人像会触发对方 <code>500 Server exception</code>。积分已按提示退回。</p><p><strong>修复：</strong> 生成前先把图片上传到 KIE，再用返回的 HTTPS 地址去 <code>createTask</code>。</p><p>请再试一次 Rain Dance；余额应仍是退款后的数量。</p></div>
+  <a class="imgwrap" href="screenshots/50_8a068054-65af-4bc3-aa4a-54698b479684-e1e47ea3-6509-44de-aeb5-c845cda97acd.png" target="_blank" rel="noopener">
+    <img src="screenshots/50_8a068054-65af-4bc3-aa4a-54698b479684-e1e47ea3-6509-44de-aeb5-c845cda97acd.png" alt="报错，见截图" loading="lazy" />
+  </a>
+  <figcaption><span class="t">18:19</span> · #50 · 生成踩坑</figcaption>
+</figure><figure class="shot" id="shot-51">
+  <blockquote class="q"><span class="label">问</span>这个是啥问题？</blockquote>
+  <div class="ans"><p>这不是我们站点的 bug，是 <strong>KIE / Seedance 内容审核</strong>拦了这张图。</p><p>报错大意是：输入图可能涉及<strong>版权/受限素材</strong>（常见于明星照、官方宣传图、可识别公众人物等），任务被拒；积分已退回。</p><p>上传链路这次已经通了（不再是之前的 500）。换一张<strong>本人清晰正脸自拍/人像</strong>再试即可；侧身、舞台造型、疑似艺人照更容易被拦。</p></div>
+  <a class="imgwrap" href="screenshots/51_d49d7a50-8a28-4b32-9a31-2aa63e003de6-5351c66d-aa6a-4614-8b3f-e27cc6da74e4.png" target="_blank" rel="noopener">
+    <img src="screenshots/51_d49d7a50-8a28-4b32-9a31-2aa63e003de6-5351c66d-aa6a-4614-8b3f-e27cc6da74e4.png" alt="这个是啥问题？" loading="lazy" />
+  </a>
+  <figcaption><span class="t">18:23</span> · #51 · 生成踩坑</figcaption>
+</figure></div></section><section class="block"><h3>生成排队</h3><div class="grid"><figure class="shot" id="shot-52">
+  <blockquote class="q"><span class="label">问</span>如截图所示，现在在排队吗，</blockquote>
+  <div class="ans"><p>对，截图里就是在排队：</p><ul><li>按钮显示 <strong>Queued...</strong></li><li>下面有 <strong>Waiting in queue...</strong></li><li>右侧预览也是 <strong>Queued...</strong>，页面在隔几秒轮询任务状态</li></ul><p>积分已扣 1（余额 1），等 KIE 开始生成后会变成生成中，完成会出视频；若失败会退回积分。一般等一两分钟即可，别关页面。</p></div>
+  <a class="imgwrap" href="screenshots/52_53ffae47-15fe-4192-b0ae-a331a9ad288c-6368d4f6-078c-42cd-b7d2-ba78621a8d0c.png" target="_blank" rel="noopener">
+    <img src="screenshots/52_53ffae47-15fe-4192-b0ae-a331a9ad288c-6368d4f6-078c-42cd-b7d2-ba78621a8d0c.png" alt="如截图所示，现在在排队吗，" loading="lazy" />
+  </a>
+  <figcaption><span class="t">18:28</span> · #52 · 生成排队</figcaption>
+</figure></div></section><section class="block"><h3>Favicon</h3><div class="grid"><figure class="shot" id="shot-53">
+  <blockquote class="q"><span class="label">问</span>如截图所示，这个图片是什么图标，是给网站设计的吗，还是用的缺省的</blockquote>
+  <div class="ans"><p>红圈里那个<strong>不是网站图标</strong>，是浏览器<strong>扩展栏</strong>里的扩展：白底黑 <strong>N</strong>，一般是 <strong>Next.js DevTools</strong>（开发者装的），和 DuetBooth 页面设计无关。</p><p>DuetBooth 自己目前也<strong>没有单独设计 favicon</strong>（标签页小图标多半是 Next 默认/占位）。若要品牌图标，需要另做一枚站点 favicon。</p></div>
+  <a class="imgwrap" href="screenshots/53_e679a926-e0e6-40c1-84ef-8a5cf6b522ea-29117cb7-c35c-42db-91de-b2c2ddbdea72.png" target="_blank" rel="noopener">
+    <img src="screenshots/53_e679a926-e0e6-40c1-84ef-8a5cf6b522ea-29117cb7-c35c-42db-91de-b2c2ddbdea72.png" alt="如截图所示，这个图片是什么图标，是给网站设计的吗，还是用的缺省的" loading="lazy" />
+  </a>
+  <figcaption><span class="t">18:35</span> · #53 · Favicon</figcaption>
+</figure><figure class="shot" id="shot-54">
+  <blockquote class="q"><span class="label">问</span>DuetBooth 自己目前也没有单独设计 favicon……设计一个吧</blockquote>
+  <div class="ans"><p>已设计并上线：暖色暗底 + 橙色照相亭边框 + 两个米色人像剪影（呼应 Duet/Booth）。提供 /favicon.svg、/icon、/apple-icon；硬刷新标签页可见。</p></div>
+  <a class="imgwrap" href="screenshots/54_duetbooth-favicon-source.jpg" target="_blank" rel="noopener">
+    <img src="screenshots/54_duetbooth-favicon-source.jpg" alt="DuetBooth 自己目前也没有单独设计 favicon……设计一个吧" loading="lazy" />
+  </a>
+  <figcaption><span class="t">18:36</span> · #54 · Favicon</figcaption>
+</figure></div></section>
+</section>
+
+<section id="pitfalls">
+  <h2>踩坑摘要</h2>
+  <table>
+    <tr><th>现象</th><th>处理</th></tr>
+    <tr><td>付费跳 localhost</td><td><code>APP_URL</code> + 构建勿烘焙 <code>.env.local</code></td></tr>
+    <tr><td>No such checkout.session</td><td>live key；注意 session_id 的 I/l</td></tr>
+    <tr><td>积分写不进</td><td>必须 <code>store:"kv"</code></td></tr>
+    <tr><td>KIE 500</td><td>先上传图再 createTask</td></tr>
+    <tr><td>copyright restrictions</td><td>换本人清晰人像；积分已退</td></tr>
+  </table>
+</section>
+
+<section id="ops">
+  <h2>运维命令</h2>
+  <pre>cd video-effects
+pnpm deploy
+npx wrangler secret list --name duetbooth
+curl -s https://duetbooth.co/api/wallet</pre>
+</section>
+
+<footer class="site">
+  <p>路径：<code>video-effects/docs/launch-2026-10-09/index.html</code></p>
+</footer>
+</div>
+</body>
+</html>

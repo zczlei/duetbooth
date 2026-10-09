@@ -1,3 +1,12 @@
-allowBuilds:
-  sharp: false
-  unrs-resolver: false
+packages:
+  - "."
+
+patchedDependencies:
+  "@opennextjs/cloudflare@1.20.9": patches/@opennextjs__cloudflare@1.20.9.patch
+
+onlyBuiltDependencies:
+  - esbuild
+  - workerd
+  - sharp
+
+dangerouslyAllowAllBuilds: true
