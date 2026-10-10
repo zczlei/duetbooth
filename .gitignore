@@ -37,8 +37,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files — keep secrets local; allow public production URL template
 .env*
+!.env.example
+!.env.production
 
 # vercel
 .vercel

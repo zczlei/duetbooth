@@ -125,36 +125,26 @@ AUTH_URL=http://localhost:3005   # 生产改成正式域名
 - [x] **KV** `DUETBOOTH_KV` → ID `699306fe965d4c88b74511941bd0c2ff`（已写入 `wrangler.jsonc`）
 - [x] OpenNext 脚手架（`@opennextjs/cloudflare`、`open-next.config.ts`、`wrangler.jsonc`）
 
-### 上线步骤
+### 上线 / 持续部署
 
-1. 本机登录：`npx wrangler login`
-2. 首次部署（可用 `*.workers.dev` 先测）：
+**日常：push `main` → GitHub Actions 自动构建并部署到 Worker `duetbooth`。**  
+说明见 [`docs/github-cloudflare-cd.md`](docs/github-cloudflare-cd.md)。
+
+仓库需配置 Actions Secrets：`CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`。  
+业务密钥（Stripe / KIE / Ark / Auth…）仍只放 **Cloudflare Worker Secrets**。
+
+本机紧急热修：
 
 ```bash
 cd video-effects
-pnpm deploy
+npx wrangler login   # 首次
+pnpm deploy          # 临时移开 .env.local，避免烤进产物
 ```
 
-3. 用 Wrangler 写入 Secrets（勿进 git）：
+其它：Stripe Webhook → `https://duetbooth.co/api/webhook/stripe`；Google OAuth 回调 → `https://duetbooth.co/api/auth/callback/google`。
 
-```bash
-npx wrangler secret put STRIPE_SECRET_KEY
-npx wrangler secret put STRIPE_WEBHOOK_SECRET
-npx wrangler secret put KIE_API_KEY
-npx wrangler secret put FAL_KEY
-npx wrangler secret put AUTH_SECRET
-npx wrangler secret put AUTH_GOOGLE_ID
-npx wrangler secret put AUTH_GOOGLE_SECRET
-```
-
-4. 在 Dashboard / wrangler 设 `NEXT_PUBLIC_APP_URL`、`AUTH_URL` = 正式域名或 workers.dev URL  
-5. Stripe Live Webhook → `https://域名/api/webhook/stripe`  
-6. Google OAuth 回调 → `https://域名/api/auth/callback/google`  
-7. （可选）绑自定义域：Dashboard → Worker `duetbooth` → Domains
-
-本地未绑 KV 时回退 `data/kv` 文件存储。`pnpm preview` 可在 Workers 运行时本地预览。  
-同清单：`.cursor/rules/cloudflare-deploy-checklist.mdc`。
-上线手记（截图问答）：`docs/launch-2026-10-09/index.html`。
+本地未绑 KV 时回退 `data/kv`。`pnpm preview` 可在 Workers 运行时预览。  
+清单：`.cursor/rules/cloudflare-deploy-checklist.mdc`；手记：`docs/launch-2026-10-09/index.html`。
 
 ## 下一步可接
 

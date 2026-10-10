@@ -1,0 +1,34 @@
+# PR / branch checks: OpenNext build only (no Cloudflare credentials).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.2.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build OpenNext Worker
+        run: pnpm exec opennextjs-cloudflare build
+        env:
+          NEXT_PUBLIC_APP_URL: https://duetbooth.co

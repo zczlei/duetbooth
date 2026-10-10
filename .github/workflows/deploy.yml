@@ -1,0 +1,56 @@
+# Push to main → build OpenNext Worker and deploy to Cloudflare.
+# Requires repo secrets:
+#   CLOUDFLARE_API_TOKEN  — Workers Edit (create at dash.cloudflare.com → API Tokens)
+#   CLOUDFLARE_ACCOUNT_ID — a37ddcd55479d60107a2583a7d0d6514
+#
+# Runtime secrets (STRIPE_*, KIE_*, ARK_*, AUTH_*, …) stay in Cloudflare Worker Secrets,
+# not in GitHub. Do not commit .env.local.
+name: Deploy Cloudflare
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-cloudflare
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.2.2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build OpenNext Worker
+        run: pnpm exec opennextjs-cloudflare build
+        env:
+          # Inlined at build time for client/auth redirects. No secrets here.
+          NEXT_PUBLIC_APP_URL: https://duetbooth.co
+          APP_URL: https://duetbooth.co
+          AUTH_URL: https://duetbooth.co
+
+      - name: Deploy
+        run: pnpm exec opennextjs-cloudflare deploy -- --keep-vars
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NEXT_PUBLIC_APP_URL: https://duetbooth.co
+          APP_URL: https://duetbooth.co
+          AUTH_URL: https://duetbooth.co

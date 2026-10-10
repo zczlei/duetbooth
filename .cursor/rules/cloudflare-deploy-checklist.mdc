@@ -16,7 +16,8 @@ alwaysApply: true
 - [x] **KV**：绑定名 `DUETBOOTH_KV`，ID `699306fe965d4c88b74511941bd0c2ff`（`wrangler.jsonc`）
 - [x] **域名 / 自定义域**：`duetbooth.co`（+ www→apex Redirect）
 - [x] **运行时 URL**：`APP_URL` / `AUTH_URL` / `NEXT_PUBLIC_APP_URL` = `https://duetbooth.co`
-- [x] **密钥放 Cloudflare Secrets**（勿 commit `.env*`）；部署用 `pnpm deploy`（`scripts/cf-deploy.sh`，避免烘焙 `.env.local`）
+- [x] **密钥放 Cloudflare Secrets**（勿 commit `.env.local`）；日常部署走 **GitHub Actions**（push `main`），本机热修仍可用 `pnpm deploy`
+- [x] **CD 文档**：`docs/github-cloudflare-cd.md`（Actions Secrets + 可选 Workers Builds）
 
 ## Secrets（名称核对；勿把明文写进仓库/聊天）
 
@@ -50,6 +51,15 @@ npx wrangler secret list --name duetbooth
 curl -s https://duetbooth.co/api/wallet
 # 期望：store=kv, stripeReady=true, googleReady=true
 ```
+
+### GitHub Actions Secrets（仓库 Settings → Secrets）
+
+| Secret | 值 |
+|---|---|
+| `CLOUDFLARE_ACCOUNT_ID` | `a37ddcd55479d60107a2583a7d0d6514` |
+| `CLOUDFLARE_API_TOKEN` | Dashboard 创建的 Workers Edit Token |
+
+推送 `main` 后看 Actions：`Deploy Cloudflare`。
 
 ## 其它
 
