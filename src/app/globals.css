@@ -411,6 +411,28 @@ code {
   font-size: 0.88rem;
 }
 
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.action-row .primary-btn,
+.action-row .ghost-btn {
+  flex: 1 1 12rem;
+}
+
+.stage-storyboard {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.preview-note {
+  margin-top: 0.65rem;
+}
+
 .error {
   color: var(--danger);
   margin: 0.8rem 0 0;

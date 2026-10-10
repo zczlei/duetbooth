@@ -42,8 +42,10 @@ cp .env.example .env.local
 
 - `VIDEO_PROVIDER=fal` + `FAL_KEY=...`
 - 或 `VIDEO_PROVIDER=kie` + `KIE_API_KEY=...`
+- 或 `VIDEO_PROVIDER=ark` + `ARK_API_KEY=...`（火山方舟豆包 Seedance）
+- 或 `VIDEO_PROVIDER=auto`：浏览器检测到**真人人脸**→`kie`，**无人脸**→`ark`；检测不到默认 `kie`；Ark 因人脸被拒时自动回退 `kie`
 
-按你账号实际可用的 Seedance 模型 ID 改 `FAL_VIDEO_MODEL` / `KIE_VIDEO_MODEL`。
+按你账号实际可用的模型 ID 改 `FAL_VIDEO_MODEL` / `KIE_VIDEO_MODEL` / `ARK_VIDEO_MODEL`。
 
 ## 新增一个视频词内页
 

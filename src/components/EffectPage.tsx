@@ -29,6 +29,9 @@ export function EffectPage({ effect }: { effect: EffectDefinition }) {
             <span>{effect.durationSec}s</span>
             <span>{effect.aspectRatio}</span>
             <span>{effect.subjects === 2 ? "2 photos" : "1 photo"}</span>
+            {effect.preview?.mode === "storyboard" ? (
+              <span>Free framing preview</span>
+            ) : null}
             <span>Pay per video</span>
           </div>
         </div>

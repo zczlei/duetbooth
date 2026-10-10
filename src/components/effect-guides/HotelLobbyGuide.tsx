@@ -52,13 +52,15 @@ export function HotelLobbyGuide() {
           clean face is the difference between &quot;looks like them&quot; and
           &quot;kind of resembles them&quot;.
         </p>
-        <h3>Step 3 — Generate the duet</h3>
+        <h3>Step 3 — Preview framing free, then unlock</h3>
         <p>
           Choose Classic Orange Booth for the exact trend look, Friends &amp;
           Couples for pair staging, or Rapping Pets to animate two animals while
-          keeping fur markings. Press generate — one credit — and the 10-second
-          clip renders. Sign in with Google if you want your credit balance to
-          follow you across devices, then download and post.
+          keeping fur markings. Press Preview framing free to see the booth
+          layout in your browser — zero credits. When the left/right match looks
+          right, unlock the 10-second clip for one credit. Sign in with Google if
+          you want your credit balance to follow you across devices, then
+          download and post.
         </p>
       </section>
 
@@ -192,14 +194,18 @@ export function HotelLobbyGuide() {
       </section>
 
       <section className="section guide-section">
-        <h2>Can I try the hotel lobby AI video free?</h2>
+        <h2>Free Hotel Lobby AI Generator — Try It Before You Pay</h2>
         <p>
-          Not a free render — there is no credit cost without generating, and
-          DuetBooth is pay-per-clip from $4.90. What you can do free is upload
-          both photos and check the framing before pressing generate, so a bad
-          source photo costs you nothing. Credits never expire and there is no
-          subscription, no watermarked trial, and no auto-renewal: buy a clip,
-          use a clip.
+          Yes. Upload two photos and get a free hotel lobby AI preview — the
+          orange booth frame, the hanging microphone, and both faces placed left
+          and right, rendered in your browser before you spend a credit. You see
+          who lands on which side and whether the two portraits match, then
+          unlock the full 10-second 16:9 clip for $4.90.
+        </p>
+        <p>
+          The preview is free with no card, and it never becomes a subscription.
+          DuetBooth is pay-per-video: $4.90 for one clip, $9.90 for three, $19.90
+          for ten. Credits don&apos;t expire.
         </p>
       </section>
 

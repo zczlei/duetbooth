@@ -62,9 +62,11 @@ export async function POST(request: Request) {
         },
       ],
       metadata: {
+        project: "duetbooth",
         walletId,
         packId: pack.id,
         videos: String(pack.videos),
+        ...(body.effectSlug ? { effectSlug: body.effectSlug } : {}),
       },
       client_reference_id: walletId,
     });

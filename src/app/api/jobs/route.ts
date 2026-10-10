@@ -13,6 +13,8 @@ type Body = {
   effectSlug?: string;
   templateId?: string;
   imageUrls?: string[];
+  /** From client FaceDetector; used when VIDEO_PROVIDER=auto */
+  hasHumanFace?: boolean | null;
 };
 
 /**
@@ -76,6 +78,8 @@ export async function POST(request: Request) {
       imageUrls: imageUrls.slice(0, effect.subjects),
       aspectRatio: effect.aspectRatio,
       durationSec: effect.durationSec,
+      hasHumanFace:
+        typeof body.hasHumanFace === "boolean" ? body.hasHumanFace : null,
     });
 
     const job = await createJob({
@@ -95,6 +99,7 @@ export async function POST(request: Request) {
       {
         ...publicJobView(job),
         credits: spent.credits,
+        routedProvider: submitted.provider,
       },
       { status: 202 },
     );

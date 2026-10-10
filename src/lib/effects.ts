@@ -14,6 +14,13 @@ export type EffectTemplate = {
   promptHint?: string;
 };
 
+export type EffectPreview = {
+  /** Frontend canvas storyboard — never hits the generate pipeline. */
+  mode: "storyboard";
+  label: string;
+  note: string;
+};
+
 export type EffectDefinition = {
   slug: string;
   keyword: string;
@@ -32,6 +39,8 @@ export type EffectDefinition = {
   faq: { q: string; a: string }[];
   howTo: { title: string; body: string }[];
   featured?: boolean;
+  /** Optional free client-side framing preview (hotel-lobby). */
+  preview?: EffectPreview;
 };
 
 /**
@@ -46,7 +55,7 @@ export const EFFECTS: EffectDefinition[] = [
     cardTitle: "Hotel Lobby AI Video Generator",
     headline: "Two photos. One orange booth duet.",
     description:
-      "Hotel lobby AI video generator: turn two photos into the Migos hotel lobby duet in 10 seconds. No prompt writing, pay per clip.",
+      "Hotel lobby AI video generator with free framing preview: upload two photos, see the orange booth layout, then unlock the Migos hotel lobby duet. No prompt writing, pay per clip from $4.90.",
     accent: "#ff6a2b",
     durationSec: 10,
     aspectRatio: "16:9",
@@ -56,9 +65,18 @@ export const EFFECTS: EffectDefinition[] = [
       "hotel lobby ai",
       "hotel lobby ai video",
       "hotel lobby ai generator",
+      "free hotel lobby ai generator",
+      "hotel lobby ai video free",
+      "migos hotel lobby ai",
       "migos ai",
       "hotel lobby ai filter",
+      "hotel lobby colors booth",
     ],
+    preview: {
+      mode: "storyboard",
+      label: "Preview framing free",
+      note: "See who lands left, who lands right, and how the booth frame crops — before you spend a credit.",
+    },
     templates: [
       {
         id: "classic-orange",
@@ -97,8 +115,8 @@ export const EFFECTS: EffectDefinition[] = [
         body: "One photo per person, front-facing and evenly lit. JPG, PNG or WebP up to 5MB. Avoid sunglasses and group shots.",
       },
       {
-        title: "Generate the duet",
-        body: "Pick Classic Orange Booth, Friends & Couples, or Rapping Pets. One credit renders a 10-second 16:9 clip.",
+        title: "Preview free, then unlock",
+        body: "Preview framing free in your browser (0 credits). When left/right looks right, unlock the 10-second 16:9 clip for one credit.",
       },
     ],
     faq: [
@@ -116,7 +134,7 @@ export const EFFECTS: EffectDefinition[] = [
       },
       {
         q: "Is there a free hotel lobby AI video generator?",
-        a: "DuetBooth is pay-per-video: $4.90 for one clip, $9.90 for three, $19.90 for ten. Uploading and checking framing is free; one credit renders and downloads the full clip.",
+        a: "Yes — the framing preview is free. Upload two photos, see the orange booth layout and who stands left or right, then spend one credit ($4.90) to render and download the full 10-second clip. No card needed for the preview and no subscription behind it.",
       },
       {
         q: "How long is the video and what ratio?",

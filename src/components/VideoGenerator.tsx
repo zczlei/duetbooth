@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { EffectDefinition } from "@/lib/effects";
+import { detectHumanFaceInBlobUrls } from "@/lib/detect-face";
+import { renderHotelLobbyStoryboard } from "@/lib/storyboard";
 
 type Props = {
   effect: EffectDefinition;
@@ -31,6 +33,8 @@ export function VideoGenerator({ effect }: Props) {
     Array.from({ length: effect.subjects }, () => null),
   );
   const [loading, setLoading] = useState(false);
+  const [previewing, setPreviewing] = useState(false);
+  const [storyboardUrl, setStoryboardUrl] = useState<string | null>(null);
   const [jobStatus, setJobStatus] = useState<JobStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -39,6 +43,7 @@ export function VideoGenerator({ effect }: Props) {
   const [needCredits, setNeedCredits] = useState(false);
   const pollCancel = useRef(false);
 
+  const storyboardPreview = effect.preview?.mode === "storyboard";
   const template = useMemo(
     () => effect.templates.find((t) => t.id === templateId) || effect.templates[0],
     [effect.templates, templateId],
@@ -61,18 +66,41 @@ export function VideoGenerator({ effect }: Props) {
     };
   }, []);
 
-  async function onPick(index: number, fileList: FileList | null) {
+  function onPick(index: number, fileList: FileList | null) {
     const file = fileList?.[0] || null;
-    const nextFiles = [...files];
-    const nextPreviews = [...previews];
-    nextFiles[index] = file;
-    if (file) {
-      nextPreviews[index] = URL.createObjectURL(file);
-    } else {
-      nextPreviews[index] = null;
+    setFiles((prev) => {
+      const next = [...prev];
+      next[index] = file;
+      return next;
+    });
+    setPreviews((prev) => {
+      const next = [...prev];
+      if (prev[index]?.startsWith("blob:")) URL.revokeObjectURL(prev[index]!);
+      next[index] = file ? URL.createObjectURL(file) : null;
+      return next;
+    });
+    setStoryboardUrl(null);
+  }
+
+  async function onPreviewFraming() {
+    setError(null);
+    const left = previews[0];
+    const right = previews[1];
+    if (!left || !right) {
+      setError("Upload both photos to preview framing.");
+      return;
     }
-    setFiles(nextFiles);
-    setPreviews(nextPreviews);
+    setPreviewing(true);
+    try {
+      const url = await renderHotelLobbyStoryboard(left, right);
+      setStoryboardUrl(url);
+      setVideoUrl(null);
+      setProviderNote("Framing preview ready — no credit used.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Preview failed");
+    } finally {
+      setPreviewing(false);
+    }
   }
 
   async function pollUntilDone(jobId: string) {
@@ -94,6 +122,7 @@ export function VideoGenerator({ effect }: Props) {
 
       if (status === "succeeded") {
         setVideoUrl(data.videoUrl || null);
+        setStoryboardUrl(null);
         setProviderNote(
           data.message?.startsWith("Demo mode")
             ? data.message
@@ -131,6 +160,7 @@ export function VideoGenerator({ effect }: Props) {
       const imageUrls = await Promise.all(
         files.filter(Boolean).map((f) => fileToDataUrl(f as File)),
       );
+      const hasHumanFace = await detectHumanFaceInBlobUrls(previews);
 
       const res = await fetch("/api/jobs", {
         method: "POST",
@@ -139,6 +169,7 @@ export function VideoGenerator({ effect }: Props) {
           effectSlug: effect.slug,
           templateId: template?.id,
           imageUrls,
+          hasHumanFace,
         }),
       });
 
@@ -156,7 +187,11 @@ export function VideoGenerator({ effect }: Props) {
       if (!jobId) throw new Error("No job id returned");
 
       setJobStatus((data.status as JobStatus) || "queued");
-      setProviderNote("Job submitted. Rendering…");
+      const routeHint =
+        typeof data.routedProvider === "string"
+          ? ` via ${data.routedProvider}`
+          : "";
+      setProviderNote(`Job submitted${routeHint}. Rendering…`);
       await pollUntilDone(jobId);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Generation failed");
@@ -175,6 +210,10 @@ export function VideoGenerator({ effect }: Props) {
         : loading
           ? "Starting…"
           : null;
+
+  const unlockLabel =
+    statusLabel ||
+    `Unlock ${effect.durationSec}s video — 1 credit ($4.90)`;
 
   return (
     <section
@@ -242,15 +281,42 @@ export function VideoGenerator({ effect }: Props) {
             ))}
           </div>
 
-          <button
-            type="button"
-            className="primary-btn"
-            disabled={loading}
-            onClick={onGenerate}
-          >
-            {statusLabel ||
-              `Generate ${effect.durationSec}s ${effect.aspectRatio} video (1 credit)`}
-          </button>
+          {storyboardPreview ? (
+            <div className="action-row">
+              <button
+                type="button"
+                className="ghost-btn"
+                disabled={previewing || loading}
+                onClick={onPreviewFraming}
+              >
+                {previewing
+                  ? "Building preview…"
+                  : effect.preview?.label || "Preview framing free"}
+              </button>
+              <button
+                type="button"
+                className="primary-btn"
+                disabled={loading || previewing}
+                onClick={onGenerate}
+              >
+                {unlockLabel}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="primary-btn"
+              disabled={loading}
+              onClick={onGenerate}
+            >
+              {statusLabel ||
+                `Generate ${effect.durationSec}s ${effect.aspectRatio} video (1 credit)`}
+            </button>
+          )}
+
+          {storyboardPreview && effect.preview?.note ? (
+            <p className="note preview-note">{effect.preview.note}</p>
+          ) : null}
 
           {error ? <p className="error">{error}</p> : null}
           {needCredits ? (
@@ -262,8 +328,14 @@ export function VideoGenerator({ effect }: Props) {
         </div>
 
         <div className="panel preview-panel">
-          <p className="eyebrow">Preview</p>
-          <h2>{template?.name || "Output"}</h2>
+          <p className="eyebrow">
+            {storyboardUrl && !videoUrl ? "Framing preview" : "Preview"}
+          </p>
+          <h2>
+            {storyboardUrl && !videoUrl
+              ? "Booth layout (free)"
+              : template?.name || "Output"}
+          </h2>
           <div
             className={
               effect.aspectRatio === "9:16" ? "stage vertical" : "stage wide"
@@ -271,17 +343,30 @@ export function VideoGenerator({ effect }: Props) {
           >
             {videoUrl ? (
               <video src={videoUrl} controls playsInline autoPlay loop />
+            ) : storyboardUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="stage-storyboard"
+                src={storyboardUrl}
+                alt="Free hotel lobby framing preview"
+              />
             ) : (
               <div className="stage-empty">
                 <p>
                   {loading
                     ? statusLabel || "Working…"
-                    : "Your video will appear here."}
+                    : previewing
+                      ? "Building free framing preview…"
+                      : storyboardPreview
+                        ? "Your framing preview will appear here."
+                        : "Your video will appear here."}
                 </p>
                 <p className="muted">
                   {loading
                     ? "This page polls job status every few seconds."
-                    : "Upload photos and press generate to start."}
+                    : storyboardPreview
+                      ? "Upload two photos, then press Preview framing free — no credit used."
+                      : "Upload photos and press generate to start."}
                 </p>
               </div>
             )}
