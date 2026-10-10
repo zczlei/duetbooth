@@ -60,3 +60,5 @@ pnpm deploy   # scripts/cf-deploy.sh，会临时移开 .env.local
 1. 改 README 一行空白 → push `main`
 2. GitHub Actions `Deploy Cloudflare` 变绿
 3. `curl -s https://duetbooth.co/api/wallet` 仍返回 `store=kv`
+
+<!-- cd-smoke: 2026-10-10 -->
