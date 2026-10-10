@@ -1,6 +1,10 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import { mergeGuestWalletIntoUser, userWalletId } from "@/lib/wallet";
+import {
+  mergeGuestWalletIntoUser,
+  touchRegisteredUser,
+  userWalletId,
+} from "@/lib/wallet";
 
 const googleConfigured = Boolean(
   process.env.AUTH_GOOGLE_ID?.trim() && process.env.AUTH_GOOGLE_SECRET?.trim(),
@@ -38,14 +42,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   events: {
-    async signIn({ account, profile }) {
+    async signIn({ account, profile, user }) {
       if (account?.provider !== "google") return;
-      const sub = (profile as { sub?: string } | undefined)?.sub;
+      const sub =
+        (profile as { sub?: string } | undefined)?.sub ||
+        (user as { id?: string } | undefined)?.id;
       if (!sub) return;
       try {
         await mergeGuestWalletIntoUser(userWalletId(sub));
+        await touchRegisteredUser({
+          userId: sub,
+          email:
+            user.email ||
+            (profile as { email?: string } | undefined)?.email ||
+            null,
+          name:
+            user.name ||
+            (profile as { name?: string } | undefined)?.name ||
+            null,
+        });
       } catch {
-        // Best-effort merge; login should still succeed.
+        // Best-effort merge / profile; login should still succeed.
       }
     },
   },

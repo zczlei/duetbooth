@@ -10,6 +10,14 @@ export type WalletRecord = {
   /** Stripe Checkout session IDs already credited (idempotent). */
   grantedSessions: string[];
   updatedAt: string;
+  /** First time this wallet row was created (ISO). */
+  createdAt?: string;
+  /** Last Google sign-in / profile touch (ISO). */
+  lastLoginAt?: string;
+  /** Google account email when known (registered users only). */
+  email?: string | null;
+  /** Google display name when known. */
+  name?: string | null;
 };
 
 function walletKey(id: string) {
@@ -17,11 +25,13 @@ function walletKey(id: string) {
 }
 
 function emptyWallet(id: string): WalletRecord {
+  const now = new Date().toISOString();
   return {
     id,
     credits: 0,
     grantedSessions: [],
-    updatedAt: new Date().toISOString(),
+    createdAt: now,
+    updatedAt: now,
   };
 }
 
@@ -55,9 +65,12 @@ export async function getOrCreateWalletId(): Promise<string> {
   const { auth } = await import("@/auth");
   const session = await auth();
   if (session?.user?.id) {
-    const id = userWalletId(session.user.id);
-    await ensureWallet(id);
-    return id;
+    await touchRegisteredUser({
+      userId: session.user.id,
+      email: session.user.email,
+      name: session.user.name,
+    });
+    return userWalletId(session.user.id);
   }
   return getGuestWalletId();
 }
@@ -81,8 +94,40 @@ async function writeWallet(wallet: WalletRecord) {
 /** Ensure a user wallet row exists (so logins are visible in storage). */
 export async function ensureWallet(walletId: string): Promise<WalletRecord> {
   const existing = await storeGet<WalletRecord>(walletKey(walletId));
-  if (existing) return existing;
+  if (existing) {
+    if (!existing.createdAt) {
+      existing.createdAt = existing.updatedAt || new Date().toISOString();
+      await writeWallet(existing);
+    }
+    return existing;
+  }
   const wallet = emptyWallet(walletId);
+  await writeWallet(wallet);
+  return wallet;
+}
+
+/**
+ * Upsert profile fields on a Google-registered wallet (email / name / lastLoginAt).
+ * Called on sign-in and whenever an authenticated request opens a wallet.
+ */
+export async function touchRegisteredUser(opts: {
+  userId: string;
+  email?: string | null;
+  name?: string | null;
+}): Promise<WalletRecord> {
+  const walletId = userWalletId(opts.userId);
+  const wallet = await ensureWallet(walletId);
+  const now = new Date().toISOString();
+  if (!wallet.createdAt) {
+    wallet.createdAt = wallet.updatedAt || now;
+  }
+  wallet.lastLoginAt = now;
+  if (opts.email?.trim()) {
+    wallet.email = opts.email.trim().toLowerCase();
+  }
+  if (opts.name?.trim()) {
+    wallet.name = opts.name.trim();
+  }
   await writeWallet(wallet);
   return wallet;
 }
