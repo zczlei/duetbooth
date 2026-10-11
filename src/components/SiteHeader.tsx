@@ -5,6 +5,8 @@ import { EFFECTS } from "@/lib/effects";
 
 function navLabel(keyword: string, title: string) {
   if (title.toLowerCase().includes("hotel lobby")) return "Hotel Lobby";
+  if (title.toLowerCase().includes("burning bridges")) return "Burning Bridges";
+  if (title.toLowerCase().includes("bulin")) return "Bulin 47";
   if (title.toLowerCase().includes("rain dance")) return "Rain Dance";
   if (title.toLowerCase().includes("zombie")) return "Zombie";
   return keyword

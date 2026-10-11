@@ -3,6 +3,10 @@ import type { EffectDefinition } from "@/lib/effects";
 import { EFFECTS } from "@/lib/effects";
 import { EffectJsonLd } from "@/components/EffectJsonLd";
 import {
+  Bulin47Guide,
+  Bulin47Ideas,
+} from "@/components/effect-guides/Bulin47Guide";
+import {
   BurningBridgesGuide,
   BurningBridgesIdeas,
 } from "@/components/effect-guides/BurningBridgesGuide";
@@ -17,6 +21,7 @@ export function EffectPage({ effect }: { effect: EffectDefinition }) {
   const others = EFFECTS.filter((e) => e.slug !== effect.slug);
   const showHotelGuide = effect.slug === "hotel-lobby";
   const showBurningBridgesGuide = effect.slug === "burning-bridges";
+  const showBulin47Guide = effect.slug === "bulin-47";
 
   return (
     <main>
@@ -60,6 +65,7 @@ export function EffectPage({ effect }: { effect: EffectDefinition }) {
 
         {showHotelGuide ? <HotelLobbyGuide /> : null}
         {showBurningBridgesGuide ? <BurningBridgesGuide /> : null}
+        {showBulin47Guide ? <Bulin47Guide /> : null}
 
         <PricingSection effectSlug={effect.slug} />
 
@@ -77,6 +83,7 @@ export function EffectPage({ effect }: { effect: EffectDefinition }) {
 
         {showHotelGuide ? <HotelLobbyIdeas /> : null}
         {showBurningBridgesGuide ? <BurningBridgesIdeas /> : null}
+        {showBulin47Guide ? <Bulin47Ideas /> : null}
 
         {others.length ? (
           <section className="section">

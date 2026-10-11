@@ -268,6 +268,14 @@ export function SnapGenGuidePage() {
             </p>
             <div className="trend-grid" style={{ marginTop: "1rem" }}>
               <Link
+                href="/effects/bulin-47"
+                className="trend-card"
+                style={{ ["--effect-accent" as string]: "#e23d4a" }}
+              >
+                <strong>Bulin 47 AI Video</strong>
+                <span>One photo → freestyle party trend.</span>
+              </Link>
+              <Link
                 href="/effects/burning-bridges"
                 className="trend-card"
                 style={{ ["--effect-accent" as string]: "#d4a24a" }}
@@ -282,14 +290,6 @@ export function SnapGenGuidePage() {
               >
                 <strong>Hotel Lobby AI Video</strong>
                 <span>Two photos → orange booth duet.</span>
-              </Link>
-              <Link
-                href="/effects/rain-dance"
-                className="trend-card"
-                style={{ ["--effect-accent" as string]: "#3ec7ff" }}
-              >
-                <strong>Rain Dance AI Video</strong>
-                <span>One portrait → rain street motion.</span>
               </Link>
             </div>
           </section>

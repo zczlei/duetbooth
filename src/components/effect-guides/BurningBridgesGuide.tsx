@@ -194,12 +194,13 @@ export function BurningBridgesIdeas() {
       </p>
       <p>
         Want another DuetBooth trend on the same credits? Try the{" "}
+        <Link href="/effects/bulin-47">Bulin 47 AI video generator</Link>{" "}
+        (freestyle, one photo), the{" "}
         <Link href="/effects/hotel-lobby">
           hotel lobby AI video generator
         </Link>{" "}
-        (two photos, orange booth) or the{" "}
-        <Link href="/effects/rain-dance">rain dance AI video generator</Link>{" "}
-        (one portrait, rain street).
+        (two photos, orange booth), or the{" "}
+        <Link href="/effects/rain-dance">rain dance AI video generator</Link>.
       </p>
     </section>
   );

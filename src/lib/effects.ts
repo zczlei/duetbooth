@@ -253,6 +253,104 @@ export const EFFECTS: EffectDefinition[] = [
     ],
   },
   {
+    slug: "bulin-47",
+    keyword: "bulin 47 ai",
+    title: "Bulin 47 AI Video Generator — Freestyle Trend from 1 Photo",
+    cardTitle: "Bulin 47 AI Video",
+    headline: "One photo. You take the freestyle spot.",
+    description:
+      "Bulin 47 AI video generator for the viral freestyle trend: upload one clear photo and get a red-lit handheld party clip with dembow energy. No prompt writing. Pay per clip from $4.90.",
+    accent: "#e23d4a",
+    durationSec: 10,
+    aspectRatio: "9:16",
+    subjects: 1,
+    seoKeywords: [
+      "bulin 47 ai",
+      "bulin 47 ai video",
+      "bulin 47 ai video generator",
+      "bulin 47 freestyle ai",
+      "bulin47 ai",
+      "bulin 47 face swap",
+      "bulin 47 trend",
+    ],
+    templates: [
+      {
+        id: "freestyle-lead",
+        name: "Freestyle Lead",
+        blurb: "Red-lit room, handheld camera, you as the center freestyle.",
+        promptHint:
+          "One person as the lead freestyle performer in a packed red-lit room party, handheld phone camera energy, dembow rhythm body moves, crowd behind, vertical 9:16, keep the subject's face identity and outfit from the photo, cinematic social video, not a celebrity likeness",
+      },
+      {
+        id: "crowd-hype",
+        name: "Crowd Hype",
+        blurb: "Tighter crowd, phones up, high-energy cut.",
+        promptHint:
+          "One person freestyling in a dense night party crowd with phones raised, deep red lighting, energetic handheld camera, vertical 9:16, keep face identity from the photo",
+      },
+      {
+        id: "character-recast",
+        name: "Character Recast",
+        blurb: "Stylized character or meme still in the freestyle spot.",
+        promptHint:
+          "A stylized character as the lead freestyle performer in a red-lit party room, handheld camera, crowd energy, vertical 9:16, keep distinctive look from the reference image",
+      },
+    ],
+    packs: [
+      { id: "single", videos: 1, priceUsd: 4.9, label: "Single Video" },
+      { id: "three", videos: 3, priceUsd: 9.9, label: "Three Pack" },
+      { id: "ten", videos: 10, priceUsd: 19.9, label: "Creator Pack" },
+    ],
+    howTo: [
+      {
+        title: "Upload one clear photo",
+        body: "Front-facing, evenly lit, face visible. Skip sunglasses and group shots. JPG, PNG or WebP up to 5MB.",
+      },
+      {
+        title: "Pick a freestyle style",
+        body: "Freestyle Lead for the classic Bulin 47 AI look, Crowd Hype for denser party energy, or Character Recast for meme stills.",
+      },
+      {
+        title: "Generate & post",
+        body: "Get a 10-second 9:16 clip. Add the trending freestyle sound from TikTok, Reels, or Shorts when you post — the file has no licensed track baked in.",
+      },
+    ],
+    faq: [
+      {
+        q: "What is Bulin 47 AI?",
+        a: "Bulin 47 AI is the search name for tools that put your face into the viral Bulin 47 freestyle party clip. On DuetBooth it means a one-photo generator that builds a trend-faithful red-lit freestyle scene — not an official Bulin 47 product.",
+      },
+      {
+        q: "Is this a face swap on the original freestyle video?",
+        a: "No. DuetBooth generates a fresh freestyle party scene from your photo and the trend staging. We do not edit or redistribute the original clip.",
+      },
+      {
+        q: "How many photos do I need?",
+        a: "One. The trend has a single lead performer in the center of the frame.",
+      },
+      {
+        q: "Do I have to write a prompt?",
+        a: "No. Room light, handheld energy, and freestyle motion options are built into the templates.",
+      },
+      {
+        q: "Does the video include the original song?",
+        a: "No. Download the clip, then add the Bulin 47 freestyle sound from the platform library when you post.",
+      },
+      {
+        q: "Can I use a character or meme still?",
+        a: "Yes — use Character Recast with a clear still you have rights to use. Sharp face or distinctive features work best.",
+      },
+      {
+        q: "How long is the clip and what ratio?",
+        a: "10 seconds at 9:16, ready for TikTok, Reels, and Shorts.",
+      },
+      {
+        q: "Do I need an account?",
+        a: "No. Generate as a guest. Sign in with Google if you want credits across devices.",
+      },
+    ],
+  },
+  {
     slug: "rain-dance",
     keyword: "rain dance ai",
     title: "Rain Dance AI Video Generator",
