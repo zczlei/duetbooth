@@ -3,6 +3,10 @@ import type { EffectDefinition } from "@/lib/effects";
 import { EFFECTS } from "@/lib/effects";
 import { EffectJsonLd } from "@/components/EffectJsonLd";
 import {
+  BurningBridgesGuide,
+  BurningBridgesIdeas,
+} from "@/components/effect-guides/BurningBridgesGuide";
+import {
   HotelLobbyGuide,
   HotelLobbyIdeas,
 } from "@/components/effect-guides/HotelLobbyGuide";
@@ -12,6 +16,7 @@ import { VideoGenerator } from "@/components/VideoGenerator";
 export function EffectPage({ effect }: { effect: EffectDefinition }) {
   const others = EFFECTS.filter((e) => e.slug !== effect.slug);
   const showHotelGuide = effect.slug === "hotel-lobby";
+  const showBurningBridgesGuide = effect.slug === "burning-bridges";
 
   return (
     <main>
@@ -54,6 +59,7 @@ export function EffectPage({ effect }: { effect: EffectDefinition }) {
         </section>
 
         {showHotelGuide ? <HotelLobbyGuide /> : null}
+        {showBurningBridgesGuide ? <BurningBridgesGuide /> : null}
 
         <PricingSection effectSlug={effect.slug} />
 
@@ -70,6 +76,7 @@ export function EffectPage({ effect }: { effect: EffectDefinition }) {
         </section>
 
         {showHotelGuide ? <HotelLobbyIdeas /> : null}
+        {showBurningBridgesGuide ? <BurningBridgesIdeas /> : null}
 
         {others.length ? (
           <section className="section">

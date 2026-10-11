@@ -155,6 +155,104 @@ export const EFFECTS: EffectDefinition[] = [
     ],
   },
   {
+    slug: "burning-bridges",
+    keyword: "burning bridges ai video",
+    title: "Burning Bridges AI Video Generator — Drake Party Trend",
+    cardTitle: "Burning Bridges AI Video",
+    headline: "One photo. You take the party spot.",
+    description:
+      "Burning Bridges AI video generator for the Drake party trend: upload one clear photo and get a chandelier-lit handheld clip with the wave, the cup, and the Where she at? move. No prompt writing. Pay per clip from $4.90.",
+    accent: "#d4a24a",
+    durationSec: 10,
+    aspectRatio: "9:16",
+    subjects: 1,
+    seoKeywords: [
+      "burning bridges ai video",
+      "drake burning bridges ai video",
+      "burning bridges ai",
+      "drake burning bridges ai",
+      "burning bridges ai trend",
+      "where she at ai video",
+      "burning bridges face swap",
+    ],
+    templates: [
+      {
+        id: "chandelier-party",
+        name: "Chandelier Party",
+        blurb: "Crowded private dining room, warm light, wave at the lens.",
+        promptHint:
+          "One person as the life of a packed private dining-room party under crystal chandeliers, warm golden light, handheld camera energy, raising a metal cup, waving at the lens, friends crowding behind, cinematic vertical 9:16 music-video style, keep the subject's face identity and outfit from the photo, original motion not Drake",
+      },
+      {
+        id: "where-she-at",
+        name: "Where She At?",
+        blurb: "Hand over the eyes, scanning the room on the meme beat.",
+        promptHint:
+          "One person in a chandelier-lit party scene doing the Where she at hand-over-eyes gesture twice, silver cup in hand, finger flicks at the lens, crowded friends behind, warm film look, vertical 9:16, keep face identity from the photo",
+      },
+      {
+        id: "party-pet",
+        name: "Party Pet",
+        blurb: "Put a pet in the party spot with playful swagger.",
+        promptHint:
+          "A pet standing upright as the star of a packed chandelier party, silver cup raised, waving at handheld camera, warm golden light, friends in background soft focus, cinematic vertical 9:16, keep fur markings from the photo",
+      },
+    ],
+    packs: [
+      { id: "single", videos: 1, priceUsd: 4.9, label: "Single Video" },
+      { id: "three", videos: 3, priceUsd: 9.9, label: "Three Pack" },
+      { id: "ten", videos: 10, priceUsd: 19.9, label: "Creator Pack" },
+    ],
+    howTo: [
+      {
+        title: "Upload one clear photo",
+        body: "Front-facing, evenly lit, face and upper body in frame. Full-body works best if you want outfit match. JPG, PNG or WebP up to 5MB.",
+      },
+      {
+        title: "Pick a party style",
+        body: "Chandelier Party for the classic Drake Burning Bridges look, Where She At? for the meme gesture, or Party Pet for animals.",
+      },
+      {
+        title: "Generate & post",
+        body: "Get a 10-second 9:16 burning bridges AI video. Add the sound from the platform library when you post — the clip itself has no licensed track baked in.",
+      },
+    ],
+    faq: [
+      {
+        q: "What is the burning bridges AI video trend?",
+        a: "Short AI clips that put you (or a friend, pet, or character) into a chandelier-lit party scene inspired by Drake's \"Burning Bridges\" music video — waving at a handheld camera, raising a cup, often with the Where she at? hand-over-eyes gesture. People search it as burning bridges AI video and Drake burning bridges AI video.",
+      },
+      {
+        q: "Is this a face swap on the original Drake MV?",
+        a: "No. DuetBooth generates a fresh party scene from your photo and the trend staging. We do not edit or redistribute copyrighted music-video footage.",
+      },
+      {
+        q: "How many photos do I need?",
+        a: "One. This trend has a single starring spot — the person (or pet) at the center of the party.",
+      },
+      {
+        q: "Do I have to write a prompt?",
+        a: "No. The chandelier room, handheld energy, cup, and gesture options are built into the style templates.",
+      },
+      {
+        q: "Does the video include the Drake song?",
+        a: "No. Download the silent (or ambient) clip, then add \"Burning Bridges\" from TikTok, Reels, or Shorts' own sound library when you post — that is the usual and safer path for the trend.",
+      },
+      {
+        q: "Can I use a pet or a character still?",
+        a: "Yes. Use Party Pet for animals, or upload a clear character/portrait still with Chandelier Party or Where She At?. Sharp face (or markings) and even light work best.",
+      },
+      {
+        q: "How long is the clip and what ratio?",
+        a: "10 seconds at 9:16, ready for TikTok, Reels, and Shorts.",
+      },
+      {
+        q: "Do I need an account?",
+        a: "No. Generate as a guest. Sign in with Google if you want credits to follow you across devices.",
+      },
+    ],
+  },
+  {
     slug: "rain-dance",
     keyword: "rain dance ai",
     title: "Rain Dance AI Video Generator",

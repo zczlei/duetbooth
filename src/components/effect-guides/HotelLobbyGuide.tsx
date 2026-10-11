@@ -228,14 +228,17 @@ export function HotelLobbyIdeas() {
         your upload.
       </p>
       <p>
-        If you want a second trend clip on the same workflow, the{" "}
-        <Link href="/effects/rain-dance">rain dance AI video generator</Link>{" "}
-        runs on one portrait instead of two, and the{" "}
+        If you want a second trend clip on the same workflow, try the{" "}
+        <Link href="/effects/burning-bridges">
+          burning bridges AI video generator
+        </Link>{" "}
+        (Drake party, one photo), the{" "}
+        <Link href="/effects/rain-dance">rain dance AI video generator</Link>,
+        or the{" "}
         <Link href="/effects/zombie-trend">
           AI zombie trend video generator
-        </Link>{" "}
-        is a single-subject horror transformation. Same credits, same
-        pay-per-clip, no prompt writing.
+        </Link>
+        . Same credits, same pay-per-clip, no prompt writing.
       </p>
     </section>
   );
