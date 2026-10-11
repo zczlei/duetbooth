@@ -56,6 +56,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <p>
                 Create short videos from your photos. New styles added regularly.
               </p>
+              <p>
+                <a href="/guides/snapgen-ai-video-generator">
+                  SnapGen AI video generator guide
+                </a>
+              </p>
             </div>
           </footer>
         </Providers>

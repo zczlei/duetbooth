@@ -685,6 +685,30 @@ code {
   font-weight: 650;
 }
 
+.guide-section a[href^="http"] {
+  word-break: break-word;
+}
+
+.site-footer a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.site-footer a:hover {
+  color: var(--accent, #2bb5a0);
+}
+
+.guide-table thead th {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 650;
+  text-align: left;
+  padding: 0.55rem 0.65rem;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
 .guide-table-wrap {
   margin: 0.75rem 0 1rem;
   overflow-x: auto;

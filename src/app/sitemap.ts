@@ -20,6 +20,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    {
+      url: `${BASE}/guides/snapgen-ai-video-generator`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
     ...effectEntries,
   ];
 }
