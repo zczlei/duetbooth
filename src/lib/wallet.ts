@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { storeGet, storePut } from "@/lib/store";
 
 const COOKIE_NAME = "duetbooth_wallet";
@@ -18,6 +18,8 @@ export type WalletRecord = {
   email?: string | null;
   /** Google display name when known. */
   name?: string | null;
+  /** ISO 3166-1 alpha-2 from Cloudflare CF-IPCountry when known. */
+  countryCode?: string | null;
 };
 
 function walletKey(id: string) {
@@ -57,6 +59,18 @@ export async function getGuestWalletId(): Promise<string> {
   return id;
 }
 
+/** Best-effort visitor country from Cloudflare edge (e.g. US, JP). */
+export async function getRequestCountryCode(): Promise<string | null> {
+  try {
+    const h = await headers();
+    const raw = (h.get("cf-ipcountry") || h.get("CF-IPCountry") || "").trim();
+    if (!raw || raw === "XX" || raw === "T1") return null;
+    return raw.toUpperCase();
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Prefer logged-in Google user wallet; otherwise guest cookie wallet.
  * Dynamic import avoids a circular dependency with src/auth.ts.
@@ -69,6 +83,7 @@ export async function getOrCreateWalletId(): Promise<string> {
       userId: session.user.id,
       email: session.user.email,
       name: session.user.name,
+      countryCode: await getRequestCountryCode(),
     });
     return userWalletId(session.user.id);
   }
@@ -114,6 +129,7 @@ export async function touchRegisteredUser(opts: {
   userId: string;
   email?: string | null;
   name?: string | null;
+  countryCode?: string | null;
 }): Promise<WalletRecord> {
   const walletId = userWalletId(opts.userId);
   const wallet = await ensureWallet(walletId);
@@ -127,6 +143,10 @@ export async function touchRegisteredUser(opts: {
   }
   if (opts.name?.trim()) {
     wallet.name = opts.name.trim();
+  }
+  const country = opts.countryCode?.trim().toUpperCase();
+  if (country && country !== "XX" && country !== "T1") {
+    wallet.countryCode = country;
   }
   await writeWallet(wallet);
   return wallet;

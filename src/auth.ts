@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import {
+  getRequestCountryCode,
   mergeGuestWalletIntoUser,
   touchRegisteredUser,
   userWalletId,
@@ -60,6 +61,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             user.name ||
             (profile as { name?: string } | undefined)?.name ||
             null,
+          countryCode: await getRequestCountryCode(),
         });
       } catch {
         // Best-effort merge / profile; login should still succeed.
