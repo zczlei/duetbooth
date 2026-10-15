@@ -226,12 +226,15 @@ async function submitKie(input: GenerateInput): Promise<ProviderSubmitResult> {
   if (!key) throw new Error("KIE_API_KEY missing");
 
   const model = env("KIE_VIDEO_MODEL") || "bytedance/seedance-2-mini";
-  if (!input.imageUrls[0]) throw new Error("KIE needs at least one first_frame_url");
+  if (!input.imageUrls[0]) {
+    throw new Error("KIE needs at least one reference image");
+  }
 
-  const firstFrameUrl = await resolveKieImageUrl(input.imageUrls[0], key);
-  const lastFrameUrl = input.imageUrls[1]
-    ? await resolveKieImageUrl(input.imageUrls[1], key)
-    : undefined;
+  // Use reference images only — do NOT pass first_frame_url / last_frame_url
+  // (those force start/end stills and are mutually exclusive with references).
+  const referenceImageUrls = await Promise.all(
+    input.imageUrls.filter(Boolean).map((url) => resolveKieImageUrl(url, key)),
+  );
 
   const duration = Math.min(15, Math.max(4, input.durationSec || 4));
 
@@ -245,8 +248,7 @@ async function submitKie(input: GenerateInput): Promise<ProviderSubmitResult> {
       model,
       input: {
         prompt: input.promptHint || `${input.effectSlug} trend video`,
-        first_frame_url: firstFrameUrl,
-        ...(lastFrameUrl ? { last_frame_url: lastFrameUrl } : {}),
+        reference_image_urls: referenceImageUrls,
         aspect_ratio: input.aspectRatio,
         resolution: env("KIE_RESOLUTION") || "480p",
         duration,
