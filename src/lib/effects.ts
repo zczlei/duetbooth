@@ -83,21 +83,21 @@ export const EFFECTS: EffectDefinition[] = [
         name: "Classic Orange Booth",
         blurb: "Locked medium-wide duet with a hanging mic.",
         promptHint:
-          "Two performers in a bright orange studio booth, one hanging microphone, alternating rap gestures, landscape 16:9",
+          "Image 1 is the LEFT performer; Image 2 is the RIGHT performer for the whole clip — never switch sides and never blend the two faces. Preserve each person's face, hair, outfit and body shape from their own photo. Seamless burnt-orange studio booth, one silver condenser microphone hanging on a cable between them, warm saturated light. They alternate rap gestures and call-and-response into the shared mic; locked-off medium-wide camera, same framing throughout, one continuous 16:9 shot. Photoreal, sharp readable faces. No text, captions, logos or watermarks.",
       },
       {
         id: "friends-couples",
         name: "Friends & Couples",
         blurb: "Clearer left/right staging for pairs.",
         promptHint:
-          "Couple or friends performing a call-and-response in an orange COLORS-style booth",
+          "Image 1 LEFT, Image 2 RIGHT — couple or friends, sides fixed, faces never blend. Keep each face, hairstyle and outfit exactly from their photo. Warm orange COLORS-style booth, hanging mic centered between them, call-and-response gestures, locked camera, continuous 16:9 landscape. Natural skin tones. No text, captions, logos or watermarks.",
       },
       {
         id: "pets",
         name: "Rapping Pets",
         blurb: "Keep fur markings while adding playful motion.",
         promptHint:
-          "Two pets performing in an orange studio booth under a hanging microphone",
+          "Image 1 is the LEFT pet; Image 2 is the RIGHT pet — never swap sides. Preserve each animal's species, fur colors and markings from its photo; do not turn them into humans or add human hands. Playful upright staging in a bright orange studio booth under a hanging microphone, alternating energetic gestures, locked medium-wide 16:9 camera, one continuous shot. No text, captions, logos or watermarks.",
       },
     ],
     packs: [
@@ -181,21 +181,21 @@ export const EFFECTS: EffectDefinition[] = [
         name: "Chandelier Party",
         blurb: "Crowded private dining room, warm light, wave at the lens.",
         promptHint:
-          "One person as the life of a packed private dining-room party under crystal chandeliers, warm golden light, handheld camera energy, raising a metal cup, waving at the lens, friends crowding behind, cinematic vertical 9:16 music-video style, keep the subject's face identity and outfit from the photo, original motion not Drake",
+          "Image 1 is the only lead identity — preserve face, hair and outfit from the photo in every frame; no celebrity likeness. Warm dim private dining room under crystal chandeliers, dark wood, soft amber light, distinct friends behind with silver cups (never clones of the lead). One continuous handheld phone-style shot at shoulder height with slight natural shake, close on the lead. The lead sways, points into the crowd, flicks a hand at the lens, raises one silver metal cup and waves. Vertical 9:16, natural skin tones, no cuts. No text, captions, logos or watermarks.",
       },
       {
         id: "where-she-at",
         name: "Where She At?",
         blurb: "Hand over the eyes, scanning the room on the meme beat.",
         promptHint:
-          "One person in a chandelier-lit party scene doing the Where she at hand-over-eyes gesture twice, silver cup in hand, finger flicks at the lens, crowded friends behind, warm film look, vertical 9:16, keep face identity from the photo",
+          "Image 1 is the lead — keep face, hair and outfit from the photo. Chandelier-lit party, handheld 9:16. Silver cup in one hand; finger flicks at the lens; twice do a clear hand-over-eyes searching gesture as if scanning the room. Crowded friends behind, warm film look, one continuous shot, no celebrity likeness. No text, captions, logos or watermarks.",
       },
       {
         id: "party-pet",
         name: "Party Pet",
         blurb: "Put a pet in the party spot with playful swagger.",
         promptHint:
-          "A pet standing upright as the star of a packed chandelier party, silver cup raised, waving at handheld camera, warm golden light, friends in background soft focus, cinematic vertical 9:16, keep fur markings from the photo",
+          "Image 1 is a pet lead — preserve species, fur markings and face from the photo; adapt cup and wave to existing limbs, do not add human hands or a human face. Packed chandelier party, silver cup raised, waving at handheld camera, warm golden light, soft-focus friends behind who are not copies of the pet. Cinematic vertical 9:16, one continuous shot. No text, captions, logos or watermarks.",
       },
     ],
     packs: [
@@ -279,21 +279,21 @@ export const EFFECTS: EffectDefinition[] = [
         name: "Freestyle Lead",
         blurb: "Red-lit room, handheld camera, you as the center freestyle.",
         promptHint:
-          "One person as the lead freestyle performer in a packed red-lit room party, handheld phone camera energy, dembow rhythm body moves, crowd behind, vertical 9:16, keep the subject's face identity and outfit from the photo, cinematic social video, not a celebrity likeness",
+          "Image 1 is the sole lead freestyle performer — preserve face, hair and outfit from the photo; not a celebrity likeness. Packed red-lit room party, crowd behind with phones, dembow-rhythm body moves and energetic hand gestures. Handheld phone camera, slight shake, staying on the lead. Vertical 9:16, one continuous cinematic social shot, natural skin tones. No text, captions, logos or watermarks.",
       },
       {
         id: "crowd-hype",
         name: "Crowd Hype",
         blurb: "Tighter crowd, phones up, high-energy cut.",
         promptHint:
-          "One person freestyling in a dense night party crowd with phones raised, deep red lighting, energetic handheld camera, vertical 9:16, keep face identity from the photo",
+          "Image 1 is the lead in a dense night party crowd with phones raised — keep face and outfit from the photo. Deep red lighting, high-energy freestyle motion, tight handheld framing, vertical 9:16, one continuous shot. Background people stay distinct, never clones of the lead. No text, captions, logos or watermarks.",
       },
       {
         id: "character-recast",
         name: "Character Recast",
         blurb: "Stylized character or meme still in the freestyle spot.",
         promptHint:
-          "A stylized character as the lead freestyle performer in a red-lit party room, handheld camera, crowd energy, vertical 9:16, keep distinctive look from the reference image",
+          "Image 1 is a stylized character lead — preserve distinctive face design, colors and rendering style from the reference; do not turn it into a random realistic celebrity. Red-lit party room, handheld camera, crowd energy, freestyle center staging, vertical 9:16, one continuous shot. No text, captions, logos or watermarks.",
       },
     ],
     packs: [
@@ -368,14 +368,14 @@ export const EFFECTS: EffectDefinition[] = [
         name: "Night Rain Street",
         blurb: "Neon reflections and heavy rain.",
         promptHint:
-          "Person dancing joyfully in heavy night rain on a wet street, cinematic vertical video",
+          "Image 1 is the dancer — preserve face, hair and outfit from the photo. Joyful dance in heavy night rain on a wet city street, neon reflections on asphalt, raindrops and mist visible. Medium shot, slow handheld or gentle push-in, vertical 9:16, one continuous cinematic shot, natural skin tones under cool neon. No text, captions, logos or watermarks.",
       },
       {
         id: "soft-drizzle",
         name: "Soft Drizzle",
         blurb: "Gentler rain with warmer light.",
         promptHint:
-          "Person dancing in soft drizzle at dusk, emotional vertical video",
+          "Image 1 is the dancer — keep face and outfit from the photo. Soft drizzle at dusk, warmer street lights, gentle emotional dance, light rain on hair and clothes. Stable medium vertical 9:16 framing, one continuous shot. No text, captions, logos or watermarks.",
       },
     ],
     packs: [
@@ -421,7 +421,7 @@ export const EFFECTS: EffectDefinition[] = [
         name: "Street Zombie",
         blurb: "Slow walk toward camera with horror grading.",
         promptHint:
-          "Person transformed into cinematic zombie walking toward camera, vertical social video",
+          "Image 1 is the subject — keep recognizable face structure and hair from the photo while applying a non-graphic zombie look (pale skin, tired eyes, subtle decay makeup; no gore, no blood, no open wounds). Slow walk toward camera on a dim empty street, horror color grade, medium shot, vertical 9:16, one continuous shot, slight handheld. No text, captions, logos or watermarks.",
       },
     ],
     packs: [
